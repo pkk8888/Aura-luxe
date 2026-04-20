@@ -1,5 +1,5 @@
 /* ============================================================
-   AuraLuxe - login.css
+   AuraLuxe - register.css
    Pure CSS only - no Bootstrap or external frameworks.
    ============================================================ */
 
@@ -18,48 +18,22 @@ body {
     align-items: center;
     justify-content: center;
     background: linear-gradient(160deg, #1a0a0f 0%, #4a1020 40%, #8b2442 75%, #c4687d 100%);
-    padding: 30px 16px;
+    padding: 40px 16px;
 }
 
-/* Decorative circles in background */
-body::before {
-    content: '';
-    position: fixed;
-    top: -120px;
-    right: -120px;
-    width: 420px;
-    height: 420px;
-    border-radius: 50%;
-    background: rgba(200, 100, 130, 0.15);
-    pointer-events: none;
-}
-
-body::after {
-    content: '';
-    position: fixed;
-    bottom: -100px;
-    left: -100px;
-    width: 320px;
-    height: 320px;
-    border-radius: 50%;
-    background: rgba(200, 100, 130, 0.10);
-    pointer-events: none;
-}
-
-/* ── White card ───────────────────────────────────────────────── */
-.login-card {
+/* ── Register card ────────────────────────────────────────────── */
+.register-card {
     position: relative;
     background: #ffffff;
     border-radius: 20px;
-    padding: 52px 46px;
+    padding: 48px 46px;
     width: 100%;
-    max-width: 450px;
+    max-width: 600px;
     box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
-    z-index: 1;
 }
 
-/* Top colour bar on card */
-.login-card::before {
+/* Top colour bar */
+.register-card::before {
     content: '';
     position: absolute;
     top: 0;
@@ -73,16 +47,15 @@ body::after {
 /* ── Brand section ────────────────────────────────────────────── */
 .brand-section {
     text-align: center;
-    margin-bottom: 34px;
+    margin-bottom: 28px;
 }
 
 .brand-name {
     font-family: 'Playfair Display', serif;
-    font-size: 38px;
+    font-size: 34px;
     font-weight: 700;
     color: #8b2442;
     letter-spacing: 3px;
-    line-height: 1;
 }
 
 .brand-name .luxe {
@@ -90,7 +63,7 @@ body::after {
 }
 
 .brand-star {
-    font-size: 20px;
+    font-size: 18px;
     color: #c4687d;
     margin: 0 4px;
 }
@@ -100,31 +73,31 @@ body::after {
     color: #b08090;
     letter-spacing: 4px;
     text-transform: uppercase;
-    margin-top: 8px;
+    margin-top: 6px;
 }
 
 .brand-divider {
     width: 50px;
     height: 2px;
     background: linear-gradient(90deg, #8b2442, #c4687d);
-    margin: 14px auto 0;
+    margin: 12px auto 0;
     border-radius: 2px;
 }
 
 /* ── Page heading ─────────────────────────────────────────────── */
-.login-heading {
+.register-heading {
     font-family: 'Playfair Display', serif;
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 600;
     color: #2a0a12;
     text-align: center;
-    margin-bottom: 26px;
+    margin-bottom: 24px;
 }
 
 /* ── Error message box ────────────────────────────────────────── */
 .error-box {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     background: #fdf0f3;
     border: 1.5px solid #e8a0b0;
@@ -134,7 +107,7 @@ body::after {
     border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
     line-height: 1.5;
 }
 
@@ -151,60 +124,42 @@ body::after {
     font-size: 13px;
     font-weight: 700;
     flex-shrink: 0;
+    margin-top: 1px;
 }
 
-/* ── Success message box (shown after registration) ───────────── */
-.success-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #f0fdf4;
-    border: 1.5px solid #86efac;
-    border-left: 4px solid #16a34a;
-    color: #166534;
-    padding: 13px 16px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 22px;
+/* ── Two column grid for form fields ─────────────────────────── */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 20px;
 }
 
-.success-box::before {
-    content: '✓';
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 22px;
-    height: 22px;
-    background: #16a34a;
-    color: white;
-    border-radius: 50%;
-    font-size: 13px;
-    font-weight: 700;
-    flex-shrink: 0;
+/* Makes a field span both columns */
+.form-group.full-width {
+    grid-column: 1 / -1;
 }
 
 /* ── Form groups ──────────────────────────────────────────────── */
 .form-group {
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-group label {
-    display: block;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: #8b2442;
-    margin-bottom: 8px;
+    margin-bottom: 7px;
 }
 
-.form-group input {
-    width: 100%;
-    padding: 14px 16px;
+.form-group input,
+.form-group select {
+    padding: 13px 16px;
     border: 1.5px solid #e8c8d0;
     border-radius: 10px;
-    font-size: 15px;
+    font-size: 14px;
     font-family: 'Raleway', sans-serif;
     color: #2a0a12;
     background: #fdf8f9;
@@ -217,14 +172,15 @@ body::after {
     font-weight: 300;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus {
     border-color: #8b2442;
     background: #ffffff;
     box-shadow: 0 0 0 3px rgba(139, 36, 66, 0.08);
 }
 
-/* ── Login button ─────────────────────────────────────────────── */
-.btn-login {
+/* ── Register button ──────────────────────────────────────────── */
+.btn-register {
     width: 100%;
     padding: 15px;
     background: linear-gradient(135deg, #8b2442 0%, #c4687d 100%);
@@ -237,29 +193,29 @@ body::after {
     letter-spacing: 3px;
     text-transform: uppercase;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 22px;
     transition: opacity 0.25s, transform 0.2s, box-shadow 0.25s;
 }
 
-.btn-login:hover {
+.btn-register:hover {
     opacity: 0.92;
     transform: translateY(-2px);
     box-shadow: 0 10px 28px rgba(139, 36, 66, 0.38);
 }
 
-.btn-login:active {
+.btn-register:active {
     transform: translateY(0);
 }
 
-/* ── Register link ────────────────────────────────────────────── */
-.register-text {
+/* ── Login link ───────────────────────────────────────────────── */
+.login-text {
     text-align: center;
-    margin-top: 26px;
+    margin-top: 24px;
     font-size: 14px;
     color: #906070;
 }
 
-.register-text a {
+.login-text a {
     color: #8b2442;
     font-weight: 600;
     text-decoration: none;
@@ -267,20 +223,23 @@ body::after {
     transition: border-color 0.2s, color 0.2s;
 }
 
-.register-text a:hover {
+.login-text a:hover {
     color: #5a1028;
     border-bottom-color: #8b2442;
 }
 
-/* ── Responsive ───────────────────────────────────────────────── */
-@media (max-width: 480px) {
-    .login-card {
-        padding: 38px 24px;
+/* ── Responsive: single column on small screens ───────────────── */
+@media (max-width: 520px) {
+    .register-card {
+        padding: 36px 20px;
+    }
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .form-group.full-width {
+        grid-column: 1;
     }
     .brand-name {
-        font-size: 30px;
-    }
-    .login-heading {
-        font-size: 19px;
+        font-size: 28px;
     }
 }

@@ -2,9 +2,8 @@ package util;
 
 /**
  * StringUtils
- * Holds all constants used across AuraLuxe:
- * database config, SQL queries, session keys, page paths, messages.
- * Update DB_USER and DB_PASS if needed.
+ * Central store for all constants used across AuraLuxe.
+ * Update DB_USER and DB_PASS if your MySQL has a password.
  */
 public class StringUtils {
 
@@ -13,7 +12,7 @@ public class StringUtils {
     public static final String CONN_URL = "jdbc:mysql://localhost:3306/auraluxe"
                                         + "?useSSL=false&serverTimezone=UTC";
     public static final String DB_USER  = "root";
-    public static final String DB_PASS  = ""; // add your MySQL password here if you have one
+    public static final String DB_PASS  = "";
 
     // ── SQL: Users ─────────────────────────────────────────────────
     public static final String INSERT_USER =
@@ -147,5 +146,4 @@ public class StringUtils {
     public static final String ERR_PASSWORD_MISMATCH = "Passwords do not match. Please try again.";
     public static final String ERR_CART_DUPLICATE    = "This product is already in your bag.";
     public static final String ERR_EMPTY_CART        = "Your bag is empty. Add products before checking out.";
-
 }

@@ -1,10 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
-<%--
-    If user is already logged in, redirect them away from login page.
-    Admins go to dashboard, users go to the home/products page.
---%>
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%
     String loggedInUser = (String) session.getAttribute("userID");
     if (loggedInUser != null) {
@@ -30,7 +25,7 @@
 
 <div class="login-card">
 
-    <%-- ── Brand section ─────────────────────────────────── --%>
+    <%-- Brand --%>
     <div class="brand-section">
         <div class="brand-name">
             <span class="brand-star">✦</span>
@@ -41,20 +36,24 @@
         <div class="brand-divider"></div>
     </div>
 
-    <%-- ── Error message shown when login fails ──────────── --%>
+    <%-- Success message shown after successful registration --%>
+    <% if ("true".equals(request.getParameter("registered"))) { %>
+        <div class="success-box">
+            Account created successfully! You can now sign in.
+        </div>
+    <% } %>
+
+    <%-- Error message from LoginServlet --%>
     <c:if test="${not empty requestScope.errorMessage}">
         <div class="error-box">
             <c:out value="${requestScope.errorMessage}" />
         </div>
     </c:if>
 
-    <%-- ── Login heading ──────────────────────────────────── --%>
     <h2 class="login-heading">Welcome Back</h2>
 
-    <%-- ── Login form ─────────────────────────────────────── --%>
     <form action="<%= request.getContextPath() %>/LoginServlet" method="post">
 
-        <%-- User ID field --%>
         <div class="form-group">
             <label for="userID">User ID</label>
             <input
@@ -67,7 +66,6 @@
             />
         </div>
 
-        <%-- Password field --%>
         <div class="form-group">
             <label for="password">Password</label>
             <input
@@ -80,12 +78,10 @@
             />
         </div>
 
-        <%-- Submit button --%>
         <button type="submit" class="btn-login">Sign In</button>
 
     </form>
 
-    <%-- ── Register link ──────────────────────────────────── --%>
     <p class="register-text">
         New to AuraLuxe?
         <a href="${pageContext.request.contextPath}/pages/register.jsp">Create an account</a>

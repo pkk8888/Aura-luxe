@@ -12,16 +12,11 @@ import util.StringUtils;
 /**
  * DatabaseController
  * Handles all database operations for AuraLuxe.
- * Each method opens its own connection and closes it when done.
- * More methods will be added as we build each page.
+ * Each method opens and closes its own connection safely.
  */
 public class DatabaseController {
 
     // ── Open a database connection ─────────────────────────────────
-    /**
-     * Opens and returns a fresh MySQL connection.
-     * Throws exception if driver or URL is wrong.
-     */
     public Connection getConnection() throws SQLException, ClassNotFoundException {
         Class.forName(StringUtils.DRIVER);
         return DriverManager.getConnection(
@@ -36,24 +31,21 @@ public class DatabaseController {
     // ══════════════════════════════════════════════════════════════
 
     /**
-     * Checks the entered User ID and password against the database.
-     *
+     * Validates login credentials against the database.
      * Returns:
-     *   1  = valid login, role is admin
-     *   2  = valid login, role is user
-     *   0  = user ID not found in database
-     *   3  = user ID found but password is wrong
-     *  -1  = database or server error
+     *   1  = valid admin
+     *   2  = valid user
+     *   0  = user ID not found
+     *   3  = wrong password
+     *  -1  = server or DB error
      */
     public int validateLogin(String userId, String enteredPassword) {
-
         try (Connection conn = getConnection();
              PreparedStatement st = conn.prepareStatement(StringUtils.GET_USER_LOGIN)) {
 
             st.setString(1, userId);
 
             try (ResultSet rs = st.executeQuery()) {
-
                 if (!rs.next()) {
                     return 0; // user not found
                 }
@@ -61,11 +53,10 @@ public class DatabaseController {
                 String storedEncrypted = rs.getString("password");
                 String role            = rs.getString("role");
 
-                // Decrypt stored password and compare with what user typed
+                // Decrypt the stored password and compare with entered password
                 String decryptedPassword = PasswordUtil.decrypt(storedEncrypted, userId);
 
                 if (decryptedPassword != null && decryptedPassword.equals(enteredPassword)) {
-                    // Password matches - check role
                     if (StringUtils.ROLE_ADMIN.equalsIgnoreCase(role)) {
                         return 1; // admin
                     } else {
@@ -78,7 +69,61 @@ public class DatabaseController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return -1; // server error
+            return -1;
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  REGISTER
+    // ══════════════════════════════════════════════════════════════
+
+    /**
+     * Inserts a new user into the database.
+     * The password inside the UsersModel must already be encrypted
+     * before calling this method.
+     * Returns:
+     *   1  = inserted successfully
+     *   0  = insert failed
+     *  -1  = server or DB error
+     */
+    public int registerUser(UsersModel user) {
+        try (Connection conn = getConnection();
+             PreparedStatement st = conn.prepareStatement(StringUtils.INSERT_USER)) {
+
+            st.setString(1, user.getUserId());
+            st.setString(2, user.getFullName());
+            st.setString(3, user.getEmail());
+            st.setString(4, user.getPhoneNumber());
+            st.setString(5, user.getPassword()); // already encrypted
+            st.setString(6, user.getRole());
+
+            int rows = st.executeUpdate();
+            return rows > 0 ? 1 : 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    /**
+     * Checks if a value already exists in the database.
+     * Used to prevent duplicate user_id, email, and phone number.
+     * Returns true if a duplicate is found.
+     */
+    public boolean isDuplicate(String value, String sqlQuery) {
+        try (Connection conn = getConnection();
+             PreparedStatement st = conn.prepareStatement(sqlQuery)) {
+
+            st.setString(1, value);
+
+            try (ResultSet rs = st.executeQuery()) {
+                return rs.next(); // true = duplicate found
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -87,12 +132,10 @@ public class DatabaseController {
     // ══════════════════════════════════════════════════════════════
 
     /**
-     * Fetches one user's full details from the database by their user_id.
-     * Used after login to store the user object in the session.
-     * Returns null if user is not found.
+     * Fetches one user's full profile details by their user_id.
+     * Returns null if no user is found.
      */
     public UsersModel getUserById(String userId) {
-
         try (Connection conn = getConnection();
              PreparedStatement st = conn.prepareStatement(StringUtils.GET_USER_BY_ID)) {
 
@@ -116,31 +159,5 @@ public class DatabaseController {
             e.printStackTrace();
         }
         return null;
-    }
-
-    // ══════════════════════════════════════════════════════════════
-    //  CHECK DUPLICATE  (ready for register page)
-    // ══════════════════════════════════════════════════════════════
-
-    /**
-     * Runs any SELECT query that checks if a value already exists.
-     * Returns true if a matching row is found (= duplicate exists).
-     * Used to check user_id, email, and phone before registering.
-     */
-    public boolean isDuplicate(String value, String sqlQuery) {
-
-        try (Connection conn = getConnection();
-             PreparedStatement st = conn.prepareStatement(sqlQuery)) {
-
-            st.setString(1, value);
-
-            try (ResultSet rs = st.executeQuery()) {
-                return rs.next();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 }
