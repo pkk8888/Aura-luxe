@@ -34,7 +34,7 @@
         <div class="al-hero__content">
             <div class="al-hero__badge">
                 <span class="al-hero__badge-dot"></span>
-                New Collection 2025
+                New Collection 2026
             </div>
             <h1 class="al-hero__title">
                 Redefine Your
