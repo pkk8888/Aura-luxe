@@ -72,7 +72,7 @@
                     name="userID"
                     placeholder="Min. 6 characters"
                     required
-                    minlength="6"
+                    
                 />
             </div>
 

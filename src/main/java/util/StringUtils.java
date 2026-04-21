@@ -13,7 +13,7 @@ public class StringUtils {
                                         + "?useSSL=false&serverTimezone=UTC";
     public static final String DB_USER  = "root";
     public static final String DB_PASS  = "";
-
+    public static final String HOME_PAGE = "/pages/home.jsp";
     // ── SQL: Users ─────────────────────────────────────────────────
     public static final String INSERT_USER =
         "INSERT INTO users (user_id, full_name, email, phone_number, password, role) " +

@@ -55,12 +55,12 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + StringUtils.ADMIN_PAGE);
 
         } else if (result == 2) {
-            // ── Normal user login ────────────────────────────────
+        	 // ── Normal user login ────────────────────────────────
             HttpSession session = request.getSession();
             session.setAttribute(StringUtils.SESSION_USER_ID,  userId);
             session.setAttribute(StringUtils.SESSION_IS_ADMIN, false);
             // Send user to home page via servlet so products load
-            response.sendRedirect(request.getContextPath() + StringUtils.FETCH_PRODUCTS_SERVLET);
+            response.sendRedirect(request.getContextPath() + StringUtils.HOME_PAGE);
 
         } else if (result == 0) {
             // ── User ID does not exist ───────────────────────────
