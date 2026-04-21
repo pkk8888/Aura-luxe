@@ -218,7 +218,7 @@
                     <!-- Hover overlay -->
                     <div class="prod-card__overlay">
                         <button class="prod-card__overlay-btn"
-                                onclick="showDetails('<%= p.getProductId() %>')">
+                                onclick="window.location.href='${pageContext.request.contextPath}/ProductDetailServlet?id=<%= p.getProductId() %>'">
                             Details
                         </button>
                         <button class="prod-card__overlay-btn prod-card__overlay-btn--cart"
