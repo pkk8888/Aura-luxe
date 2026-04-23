@@ -24,7 +24,7 @@ import util.StringUtils;
  * Fetches all products (optionally filtered by category or search)
  * and forwards to products.jsp
  */
-@WebServlet("/FetchProductsServlet")
+
 public class FetchProductsServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

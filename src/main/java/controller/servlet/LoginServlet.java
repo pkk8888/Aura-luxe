@@ -17,7 +17,7 @@ import util.StringUtils;
  * Reads the userID and password, validates them against the DB,
  * then either starts a session and redirects, or shows an error.
  */
-@WebServlet("/LoginServlet")
+
 public class LoginServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

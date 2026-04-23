@@ -1,0 +1,95 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*, controller.DatabaseController, util.StringUtils" %>
+<%-- ============================================================
+     AuraLuxe - Reusable Navbar Component
+     Usage: <jsp:include page="/components/navbar.jsp" />
+     ============================================================ --%>
+
+<%
+    // Fetch live cart count for badge
+    int navCartCount = 0;
+    String navUserId = (String) session.getAttribute("userID");
+    if (navUserId != null) {
+        try {
+            DatabaseController navDb = new DatabaseController();
+            try (Connection navConn = navDb.getConnection();
+                 PreparedStatement navSt = navConn.prepareStatement(StringUtils.GET_CART_COUNT)) {
+                navSt.setString(1, navUserId);
+                try (ResultSet navRs = navSt.executeQuery()) {
+                    if (navRs.next()) navCartCount = navRs.getInt("total");
+                }
+            }
+        } catch (Exception _e) { /* silently skip if DB unavailable */ }
+    }
+    String navFullName = (String) session.getAttribute("fullName");
+    String navDisplay  = (navFullName != null && !navFullName.isEmpty()) ? navFullName : navUserId;
+%>
+
+<nav class="al-navbar">
+    <div class="al-navbar__inner">
+        <a class="al-navbar__brand" href="${pageContext.request.contextPath}/pages/home.jsp">
+            <span class="al-navbar__brand-star">✦</span>
+            Aura<span class="al-navbar__brand-luxe">Luxe</span>
+            <span class="al-navbar__brand-star">✦</span>
+        </a>
+        <ul class="al-navbar__links">
+            <li><a href="${pageContext.request.contextPath}/pages/home.jsp" class="al-navbar__link">Home</a></li>
+            <li><a href="${pageContext.request.contextPath}/FetchProductsServlet" class="al-navbar__link">Shop</a></li>
+            <li><a href="${pageContext.request.contextPath}/pages/home.jsp#collections" class="al-navbar__link">Collections</a></li>
+            <li><a href="${pageContext.request.contextPath}/pages/home.jsp#about" class="al-navbar__link">About</a></li>
+        </ul>
+        <div class="al-navbar__actions">
+            <% if (navUserId != null) { %>
+                <span class="al-navbar__welcome">Hello, <%= navDisplay %></span>
+                <span style="position:relative;display:inline-flex;">
+                    <a href="${pageContext.request.contextPath}/CartServlet" class="al-navbar__icon-btn" title="My Bag">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <path d="M16 10a4 4 0 01-8 0"/>
+                        </svg>
+                    </a>
+                    <% if (navCartCount > 0) { %>
+                    <span style="position:absolute;top:-6px;right:-8px;background:#c4687d;color:#fff;font-size:9px;font-weight:700;font-family:'Raleway',sans-serif;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;pointer-events:none;"><%= navCartCount %></span>
+                    <% } %>
+                </span>
+                <a href="${pageContext.request.contextPath}/LogoutServlet" class="al-navbar__btn al-navbar__btn--outline">Sign Out</a>
+            <% } else { %>
+                <a href="${pageContext.request.contextPath}/pages/login.jsp" class="al-navbar__btn al-navbar__btn--outline">Sign In</a>
+                <a href="${pageContext.request.contextPath}/pages/register.jsp" class="al-navbar__btn al-navbar__btn--solid">Join Now</a>
+            <% } %>
+        </div>
+        <button class="al-navbar__hamburger" id="alNavToggle" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div class="al-navbar__mobile" id="alNavMobile">
+        <a href="${pageContext.request.contextPath}/pages/home.jsp" class="al-navbar__mobile-link">Home</a>
+        <a href="${pageContext.request.contextPath}/FetchProductsServlet" class="al-navbar__mobile-link">Shop</a>
+        <a href="${pageContext.request.contextPath}/pages/home.jsp#collections" class="al-navbar__mobile-link">Collections</a>
+        <a href="${pageContext.request.contextPath}/pages/home.jsp#about" class="al-navbar__mobile-link">About</a>
+        <% if (navUserId != null) { %>
+            <a href="${pageContext.request.contextPath}/CartServlet" class="al-navbar__mobile-link">My Bag (<%= navCartCount %>)</a>
+            <a href="${pageContext.request.contextPath}/LogoutServlet" class="al-navbar__mobile-link">Sign Out</a>
+        <% } else { %>
+            <a href="${pageContext.request.contextPath}/pages/login.jsp" class="al-navbar__mobile-link">Sign In</a>
+            <a href="${pageContext.request.contextPath}/pages/register.jsp" class="al-navbar__mobile-link">Join Now</a>
+        <% } %>
+    </div>
+</nav>
+<script>
+(function(){
+    const btn = document.getElementById('alNavToggle');
+    const drawer = document.getElementById('alNavMobile');
+    if(btn && drawer){
+        btn.addEventListener('click', function(){
+            drawer.classList.toggle('al-navbar__mobile--open');
+            btn.classList.toggle('al-navbar__hamburger--open');
+        });
+    }
+    window.addEventListener('scroll', function(){
+        const nav = document.querySelector('.al-navbar');
+        if(nav) nav.classList.toggle('al-navbar--scrolled', window.scrollY > 60);
+    });
+})();
+</script>

@@ -21,7 +21,7 @@ import util.StringUtils;
  * GET /ProductDetailServlet?id=PRD001
  * Fetches one product from DB and forwards to product-detail.jsp
  */
-@WebServlet("/ProductDetailServlet")
+
 public class ProductDetailServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

@@ -6,31 +6,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AuraLuxe | Premium Makeup Collection</title>
-
-    <!-- Shared styles (navbar + footer) -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css" />
-    <!-- Page-specific styles -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css" />
 </head>
 <body>
 
-<!-- ============================================================
-     NAVBAR (reusable component)
-     ============================================================ -->
 <%@ include file="../components/navbar.jsp" %>
-
 
 <!-- ============================================================
      HERO
      ============================================================ -->
 <section class="al-hero">
-    <!-- Decorative shapes -->
     <div class="al-hero__deco al-hero__deco--1"></div>
     <div class="al-hero__deco al-hero__deco--2"></div>
     <div class="al-hero__deco al-hero__deco--3">A</div>
 
     <div class="al-hero__inner">
-        <!-- Left: copy -->
         <div class="al-hero__content">
             <div class="al-hero__badge">
                 <span class="al-hero__badge-dot"></span>
@@ -55,19 +46,16 @@
             </div>
         </div>
 
-        <!-- Right: visual placeholder (replace with <img> tag pointing to a real product photo) -->
         <div class="al-hero__visual">
             <div class="al-hero__img-wrap">
                 <div class="al-hero__img-bg"></div>
-               <img src="${pageContext.request.contextPath}/images/hero-product.png"
-                alt="AuraLuxe Hero Product"
-                style="width:100%; height:100%; object-fit:cover; border-radius:50% 40% 50% 40%;" />
-                <!-- Stat card 1 -->
+                <img src="${pageContext.request.contextPath}/images/hero-product.png"
+                    alt="AuraLuxe Hero Product"
+                    style="width:100%; height:100%; object-fit:cover; border-radius:50% 40% 50% 40%;" />
                 <div class="al-hero__stat al-hero__stat--1">
                     <div class="al-hero__stat-num">500+</div>
                     <div class="al-hero__stat-label">Products</div>
                 </div>
-                <!-- Stat card 2 -->
                 <div class="al-hero__stat al-hero__stat--2">
                     <div class="al-hero__stat-num">4.9★</div>
                     <div class="al-hero__stat-label">Rating</div>
@@ -75,12 +63,7 @@
             </div>
         </div>
     </div>
-
-    <!-- Scroll hint -->
-    <div class="al-hero__scroll">
-        <div class="al-hero__scroll-line"></div>
-        Scroll
-    </div>
+    <!-- Scroll hint REMOVED -->
 </section>
 
 
@@ -89,7 +72,6 @@
      ============================================================ -->
 <div class="al-marquee-strip">
     <div class="al-marquee-inner">
-        <!-- Duplicate for infinite loop -->
         <span>Free Shipping Over Rs 2000</span><span class="al-marquee-sep">✦</span>
         <span>New Arrivals Every Week</span><span class="al-marquee-sep">✦</span>
         <span>Cruelty Free &amp; Vegan</span><span class="al-marquee-sep">✦</span>
@@ -119,13 +101,11 @@
         </div>
 
         <div class="al-categories__grid">
-            <!-- Lip Colour -->
             <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=lips"
                class="al-cat-card al-cat-card--lips">
                 <div class="al-cat-card__img">
-                <img src="${pageContext.request.contextPath}/images/category-lips.jpg"
-         alt="Lip Colour"
-         style="width:100%; height:100%; object-fit:cover;" />
+                    <img src="${pageContext.request.contextPath}/images/category-lips.jpg"
+                         alt="Lip Colour" style="width:100%; height:100%; object-fit:cover;" />
                 </div>
                 <div class="al-cat-card__body">
                     <div class="al-cat-card__name">Lip Colour</div>
@@ -134,14 +114,12 @@
                 <div class="al-cat-card__arrow">→</div>
             </a>
 
-            <!-- Eye Makeup -->
             <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=eyes"
                class="al-cat-card al-cat-card--eyes">
                 <div class="al-cat-card__img">
-                <img src="${pageContext.request.contextPath}/images/category-eye.jpg"
-         alt="Eye Makeup"
-         style="width:100%; height:100%; object-fit:cover;" />
-         </div>
+                    <img src="${pageContext.request.contextPath}/images/category-eye.jpg"
+                         alt="Eye Makeup" style="width:100%; height:100%; object-fit:cover;" />
+                </div>
                 <div class="al-cat-card__body">
                     <div class="al-cat-card__name">Eye Makeup</div>
                     <div class="al-cat-card__count">Mascara, Liner &amp; Shadows</div>
@@ -149,13 +127,12 @@
                 <div class="al-cat-card__arrow">→</div>
             </a>
 
-            <!-- Face & Foundation -->
             <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=face"
                class="al-cat-card al-cat-card--face">
                 <div class="al-cat-card__img">
-                <img src="${pageContext.request.contextPath}/images/category-face.jpg"
-         alt="Face"
-         style="width:100%; height:100%; object-fit:cover;" /></div>
+                    <img src="${pageContext.request.contextPath}/images/category-face.jpg"
+                         alt="Face" style="width:100%; height:100%; object-fit:cover;" />
+                </div>
                 <div class="al-cat-card__body">
                     <div class="al-cat-card__name">Face</div>
                     <div class="al-cat-card__count">Foundation, Blush &amp; Contour</div>
@@ -163,13 +140,12 @@
                 <div class="al-cat-card__arrow">→</div>
             </a>
 
-            <!-- Skincare -->
             <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=skincare"
                class="al-cat-card al-cat-card--skin">
                 <div class="al-cat-card__img">
-                <img src="${pageContext.request.contextPath}/images/category-skincare.jpg"
-         alt="Skincare"
-         style="width:100%; height:100%; object-fit:cover;" /></div>
+                    <img src="${pageContext.request.contextPath}/images/category-skincare.jpg"
+                         alt="Skincare" style="width:100%; height:100%; object-fit:cover;" />
+                </div>
                 <div class="al-cat-card__body">
                     <div class="al-cat-card__name">Skincare</div>
                     <div class="al-cat-card__count">Serums, Moisturisers &amp; More</div>
@@ -182,7 +158,7 @@
 
 
 <!-- ============================================================
-     FEATURED PRODUCTS  (static placeholders — replace with DB loop)
+     FEATURED PRODUCTS - Now connected to real DB products
      ============================================================ -->
 <section class="al-products">
     <div class="al-container">
@@ -196,15 +172,29 @@
             </a>
         </div>
 
+        <%
+            // Show cart message if any
+            String cartMsg = request.getParameter("cartMsg");
+            if ("added".equals(cartMsg)) {
+        %>
+            <div style="background:#d4edda; color:#155724; padding:10px 16px; border-radius:8px; margin-bottom:16px; text-align:center;">
+                ✓ Product added to cart!
+            </div>
+        <% } else if ("updated".equals(cartMsg)) { %>
+            <div style="background:#d4edda; color:#155724; padding:10px 16px; border-radius:8px; margin-bottom:16px; text-align:center;">
+                ✓ Cart updated!
+            </div>
+        <% } %>
+
         <div class="al-products__grid">
             <!-- Card 1 -->
             <div class="al-prod-card al-prod-card--1">
                 <div class="al-prod-card__img">
-                     <img src="${pageContext.request.contextPath}/images/lipstick.jpg"
-         alt="Velvet Rose Lip Crème"
-         style="width:100%; height:100%; object-fit:cover;" />
+                    <img src="${pageContext.request.contextPath}/images/lipstick.jpg"
+                         alt="Velvet Rose Lip Crème"
+                         style="width:100%; height:100%; object-fit:cover;" />
                     <span class="al-prod-card__badge">Bestseller</span>
-                    <button class="al-prod-card__wish" title="Wishlist">♡</button>
+                    <!-- Heart/Wishlist REMOVED -->
                 </div>
                 <div class="al-prod-card__body">
                     <div class="al-prod-card__cat">Lipstick</div>
@@ -212,7 +202,10 @@
                     <div class="al-prod-card__stars">★★★★★</div>
                     <div class="al-prod-card__footer">
                         <span class="al-prod-card__price">Rs 850</span>
-                        <button class="al-prod-card__add">Add to Cart</button>
+                        <form method="post" action="${pageContext.request.contextPath}/AddToCartServlet" style="display:inline;">
+                            <input type="hidden" name="productId" value="1" />
+                            <button type="submit" class="al-prod-card__add">Add to Cart</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -220,11 +213,11 @@
             <!-- Card 2 -->
             <div class="al-prod-card al-prod-card--2">
                 <div class="al-prod-card__img">
-                     <img src="${pageContext.request.contextPath}/images/foundation.jpg"
-         alt="Luminous Skin Foundation"
-         style="width:100%; height:100%; object-fit:cover;" />
+                    <img src="${pageContext.request.contextPath}/images/foundation.jpg"
+                         alt="Luminous Skin Foundation"
+                         style="width:100%; height:100%; object-fit:cover;" />
                     <span class="al-prod-card__badge">New</span>
-                    <button class="al-prod-card__wish" title="Wishlist">♡</button>
+                    <!-- Heart/Wishlist REMOVED -->
                 </div>
                 <div class="al-prod-card__body">
                     <div class="al-prod-card__cat">Foundation</div>
@@ -232,7 +225,10 @@
                     <div class="al-prod-card__stars">★★★★★</div>
                     <div class="al-prod-card__footer">
                         <span class="al-prod-card__price">Rs 1,299</span>
-                        <button class="al-prod-card__add">Add to Cart</button>
+                        <form method="post" action="${pageContext.request.contextPath}/AddToCartServlet" style="display:inline;">
+                            <input type="hidden" name="productId" value="2" />
+                            <button type="submit" class="al-prod-card__add">Add to Cart</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -240,10 +236,10 @@
             <!-- Card 3 -->
             <div class="al-prod-card al-prod-card--3">
                 <div class="al-prod-card__img">
-                     <img src="${pageContext.request.contextPath}/images/mascara.jpg"
-         alt="Drama Queen Mascara"
-         style="width:100%; height:100%; object-fit:cover;" />
-                    <button class="al-prod-card__wish" title="Wishlist">♡</button>
+                    <img src="${pageContext.request.contextPath}/images/mascara.jpg"
+                         alt="Drama Queen Mascara"
+                         style="width:100%; height:100%; object-fit:cover;" />
+                    <!-- Heart/Wishlist REMOVED -->
                 </div>
                 <div class="al-prod-card__body">
                     <div class="al-prod-card__cat">Eye Makeup</div>
@@ -251,7 +247,10 @@
                     <div class="al-prod-card__stars">★★★★☆</div>
                     <div class="al-prod-card__footer">
                         <span class="al-prod-card__price">Rs 699</span>
-                        <button class="al-prod-card__add">Add to Cart</button>
+                        <form method="post" action="${pageContext.request.contextPath}/AddToCartServlet" style="display:inline;">
+                            <input type="hidden" name="productId" value="3" />
+                            <button type="submit" class="al-prod-card__add">Add to Cart</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -259,11 +258,11 @@
             <!-- Card 4 -->
             <div class="al-prod-card al-prod-card--4">
                 <div class="al-prod-card__img">
-                     <img src="${pageContext.request.contextPath}/images/serum.jpg"
-         alt="Glow Radiance Serum"
-         style="width:100%; height:100%; object-fit:cover;" />
+                    <img src="${pageContext.request.contextPath}/images/serum.jpg"
+                         alt="Glow Radiance Serum"
+                         style="width:100%; height:100%; object-fit:cover;" />
                     <span class="al-prod-card__badge">Popular</span>
-                    <button class="al-prod-card__wish" title="Wishlist">♡</button>
+                    <!-- Heart/Wishlist REMOVED -->
                 </div>
                 <div class="al-prod-card__body">
                     <div class="al-prod-card__cat">Skincare</div>
@@ -271,7 +270,10 @@
                     <div class="al-prod-card__stars">★★★★★</div>
                     <div class="al-prod-card__footer">
                         <span class="al-prod-card__price">Rs 1,499</span>
-                        <button class="al-prod-card__add">Add to Cart</button>
+                        <form method="post" action="${pageContext.request.contextPath}/AddToCartServlet" style="display:inline;">
+                            <input type="hidden" name="productId" value="4" />
+                            <button type="submit" class="al-prod-card__add">Add to Cart</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -286,7 +288,6 @@
 <section class="al-about" id="about">
     <div class="al-container">
         <div class="al-about__inner">
-            <!-- Left: text -->
             <div class="al-about__body">
                 <span class="al-section-label">Our Story</span>
                 <h2 class="al-section-title">Beauty Crafted with Purpose</h2>
@@ -305,7 +306,6 @@
                 </div>
             </div>
 
-            <!-- Right: stats -->
             <div class="al-about__stats">
                 <div class="al-about__stat">
                     <div class="al-about__stat-num">10K+</div>
@@ -388,33 +388,9 @@
     </div>
 </section>
 
+<!-- READY TO GLOW SECTION REMOVED -->
 
-<!-- ============================================================
-     CTA BANNER
-     ============================================================ -->
-<section class="al-cta">
-    <div class="al-container al-cta__inner">
-        <h2 class="al-cta__title">Ready to Glow?</h2>
-        <p class="al-cta__sub">
-            Join thousands of beauty lovers and discover products made just for you.
-        </p>
-        <div class="al-cta__actions">
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet" class="al-btn al-btn--light" style="border-color:white;">
-                Shop the Collection
-            </a>
-            <a href="${pageContext.request.contextPath}/pages/register.jsp" class="al-btn" style="background:white;color:#8b2442;">
-                Create Free Account
-            </a>
-        </div>
-    </div>
-</section>
-
-
-<!-- ============================================================
-     FOOTER (reusable component)
-     ============================================================ -->
 <%@ include file="../components/footer.jsp" %>
 
 </body>
 </html>
-

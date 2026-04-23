@@ -19,7 +19,7 @@ import util.StringUtils;
  * Validates all fields, checks duplicates,
  * encrypts password, then saves the new user.
  */
-@WebServlet("/RegisterServlet")
+
 public class RegisterServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
