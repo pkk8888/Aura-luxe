@@ -12,63 +12,7 @@
 </head>
 <body>
 
-<!-- ============================================================
-     NAVBAR
-     ============================================================ -->
-<nav class="al-navbar">
-    <div class="al-navbar__inner">
-        <a class="al-navbar__brand" href="${pageContext.request.contextPath}/pages/home.jsp">
-            <span class="al-navbar__brand-star">&#10022;</span>
-            Aura<span class="al-navbar__brand-luxe">Luxe</span>
-            <span class="al-navbar__brand-star">&#10022;</span>
-        </a>
-        <ul class="al-navbar__links">
-            <li><a href="${pageContext.request.contextPath}/pages/home.jsp" class="al-navbar__link">Home</a></li>
-            <li><a href="${pageContext.request.contextPath}/FetchProductsServlet" class="al-navbar__link">Shop</a></li>
-            <li><a href="${pageContext.request.contextPath}/pages/home.jsp#collections" class="al-navbar__link">Collections</a></li>
-            <li><a href="${pageContext.request.contextPath}/pages/home.jsp#about" class="al-navbar__link">About</a></li>
-        </ul>
-        <div class="al-navbar__actions">
-            <%
-                String navUser = (String) session.getAttribute("userID");
-                String navFullName = (String) session.getAttribute("fullName");
-                if (navUser != null) {
-                    String displayName = (navFullName != null && !navFullName.isEmpty()) ? navFullName : navUser;
-            %>
-                <span class="al-navbar__welcome">Hello, <%= displayName %></span>
-                <a href="${pageContext.request.contextPath}/pages/cart.jsp" class="al-navbar__icon-btn" title="Cart">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-                        <line x1="3" y1="6" x2="21" y2="6"/>
-                        <path d="M16 10a4 4 0 01-8 0"/>
-                    </svg>
-                </a>
-                <a href="${pageContext.request.contextPath}/LogoutServlet" class="al-navbar__btn al-navbar__btn--outline">Sign Out</a>
-            <% } else { %>
-                <a href="${pageContext.request.contextPath}/pages/login.jsp" class="al-navbar__btn al-navbar__btn--outline">Sign In</a>
-                <a href="${pageContext.request.contextPath}/pages/register.jsp" class="al-navbar__btn al-navbar__btn--solid">Join Now</a>
-            <% } %>
-        </div>
-        <button class="al-navbar__hamburger" id="alNavToggle" aria-label="Toggle menu">
-            <span></span><span></span><span></span>
-        </button>
-    </div>
-    <div class="al-navbar__mobile" id="alNavMobile">
-        <a href="${pageContext.request.contextPath}/pages/home.jsp" class="al-navbar__mobile-link">Home</a>
-        <a href="${pageContext.request.contextPath}/FetchProductsServlet" class="al-navbar__mobile-link">Shop</a>
-        <a href="${pageContext.request.contextPath}/pages/home.jsp#collections" class="al-navbar__mobile-link">Collections</a>
-        <a href="${pageContext.request.contextPath}/pages/home.jsp#about" class="al-navbar__mobile-link">About</a>
-        <%
-            String mobileUser = (String) session.getAttribute("userID");
-            if (mobileUser != null) {
-        %>
-            <a href="${pageContext.request.contextPath}/LogoutServlet" class="al-navbar__mobile-link">Sign Out</a>
-        <% } else { %>
-            <a href="${pageContext.request.contextPath}/pages/login.jsp" class="al-navbar__mobile-link">Sign In</a>
-            <a href="${pageContext.request.contextPath}/pages/register.jsp" class="al-navbar__mobile-link">Join Now</a>
-        <% } %>
-    </div>
-</nav>
+ <jsp:include page="/components/navbar.jsp" />
 <script>
 (function(){
     var btn = document.getElementById('alNavToggle');
@@ -221,10 +165,6 @@
                                 onclick="window.location.href='${pageContext.request.contextPath}/ProductDetailServlet?id=<%= p.getProductId() %>'">
                             Details
                         </button>
-                        <button class="prod-card__overlay-btn prod-card__overlay-btn--cart"
-                                onclick="addToCart('<%= p.getProductId() %>', '<%= p.getProductName().replace("'", "\\'") %>')">
-                            Add to Cart
-                        </button>
                     </div>
                 </div>
 
@@ -267,10 +207,10 @@
 
                     <div class="prod-card__footer">
                         <span class="prod-card__price">Rs <%= String.format("%,.0f", p.getPrice()) %></span>
-                        <button class="prod-card__add"
-                                onclick="addToCart('<%= p.getProductId() %>', '<%= p.getProductName().replace("'", "\\'") %>')">
-                            Add to Cart
-                        </button>
+                        <form action="${pageContext.request.contextPath}/AddToCartServlet" method="post">
+                          <input type="hidden" name="productId" value="<%= p.getProductId() %>" />
+                          <button type="submit" class="prod-card__add">Add to Cart</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -307,65 +247,7 @@
 <!-- ============================================================
      FOOTER
      ============================================================ -->
-<footer class="al-footer">
-    <div class="al-footer__top">
-        <div class="al-footer__brand-col">
-            <div class="al-footer__logo">
-                <span class="al-footer__star">&#10022;</span>
-                Aura<span class="al-footer__luxe">Luxe</span>
-                <span class="al-footer__star">&#10022;</span>
-            </div>
-            <p class="al-footer__tagline">Premium Makeup Collection</p>
-            <p class="al-footer__desc">Crafted for those who believe beauty is an art form.</p>
-            <div class="al-footer__socials">
-                <a href="#" class="al-footer__social" aria-label="Instagram">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                        <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/>
-                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-                    </svg>
-                </a>
-                <a href="#" class="al-footer__social" aria-label="Facebook">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                        <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
-                    </svg>
-                </a>
-            </div>
-        </div>
-        <div class="al-footer__col">
-            <h4 class="al-footer__heading">Shop</h4>
-            <ul class="al-footer__list">
-                <li><a href="${pageContext.request.contextPath}/FetchProductsServlet" class="al-footer__link">All Products</a></li>
-                <li><a href="${pageContext.request.contextPath}/FetchProductsServlet?category=lipstick" class="al-footer__link">Lipsticks</a></li>
-                <li><a href="${pageContext.request.contextPath}/FetchProductsServlet?category=foundation" class="al-footer__link">Foundations</a></li>
-                <li><a href="${pageContext.request.contextPath}/FetchProductsServlet?category=eyeshadow" class="al-footer__link">Eye Makeup</a></li>
-            </ul>
-        </div>
-        <div class="al-footer__col">
-            <h4 class="al-footer__heading">Help</h4>
-            <ul class="al-footer__list">
-                <li><a href="#" class="al-footer__link">FAQs</a></li>
-                <li><a href="#" class="al-footer__link">Shipping Info</a></li>
-                <li><a href="#" class="al-footer__link">Returns</a></li>
-                <li><a href="#" class="al-footer__link">Contact Us</a></li>
-            </ul>
-        </div>
-        <div class="al-footer__col">
-            <h4 class="al-footer__heading">Newsletter</h4>
-            <p class="al-footer__newsletter-text">Get exclusive offers straight to your inbox.</p>
-            <div class="al-footer__form">
-                <input type="email" class="al-footer__input" placeholder="your@email.com" />
-                <button type="button" class="al-footer__subscribe-btn">Subscribe</button>
-            </div>
-        </div>
-    </div>
-    <div class="al-footer__bottom">
-        <p class="al-footer__copy">&copy; 2025 AuraLuxe. All rights reserved.</p>
-        <div class="al-footer__legal">
-            <a href="#" class="al-footer__legal-link">Privacy Policy</a>
-            <a href="#" class="al-footer__legal-link">Terms of Service</a>
-        </div>
-    </div>
-</footer>
+<jsp:include page="/components/footer.jsp" />
 
 <!-- Toast -->
 <div class="al-toast" id="alToast"></div>

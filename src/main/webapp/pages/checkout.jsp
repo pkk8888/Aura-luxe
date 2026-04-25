@@ -73,7 +73,6 @@
     <div class="al-navbar__mobile" id="alNavMobile">
         <a href="${pageContext.request.contextPath}/pages/home.jsp" class="al-navbar__mobile-link">Home</a>
         <a href="${pageContext.request.contextPath}/FetchProductsServlet" class="al-navbar__mobile-link">Shop</a>
-        
         <a href="${pageContext.request.contextPath}/LogoutServlet" class="al-navbar__mobile-link">Sign Out</a>
     </div>
 </nav>
@@ -274,9 +273,9 @@
                 </svg>
             </button>
 
-           <a href="${pageContext.request.contextPath}/FetchProductsServlet" class="co-summary__back">
-            ← Back to Shop
-               </a>
+            <a href="${pageContext.request.contextPath}/FetchProductsServlet" class="co-summary__back">
+                ← Back to Shop
+            </a>
         </div>
     </div>
 

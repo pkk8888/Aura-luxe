@@ -194,7 +194,7 @@
                          alt="Velvet Rose Lip Crème"
                          style="width:100%; height:100%; object-fit:cover;" />
                     <span class="al-prod-card__badge">Bestseller</span>
-                    <!-- Heart/Wishlist REMOVED -->
+                   
                 </div>
                 <div class="al-prod-card__body">
                     <div class="al-prod-card__cat">Lipstick</div>
@@ -203,8 +203,8 @@
                     <div class="al-prod-card__footer">
                         <span class="al-prod-card__price">Rs 850</span>
                         <form method="post" action="${pageContext.request.contextPath}/AddToCartServlet" style="display:inline;">
-                            <input type="hidden" name="productId" value="1" />
-                            <button type="submit" class="al-prod-card__add">Add to Cart</button>
+                            <input type="hidden" name="productId" value="PRD001" />
+                           <button type="submit" class="al-prod-card__add" onclick="event.stopPropagation()">Add to Cart</button>
                         </form>
                     </div>
                 </div>
@@ -217,7 +217,7 @@
                          alt="Luminous Skin Foundation"
                          style="width:100%; height:100%; object-fit:cover;" />
                     <span class="al-prod-card__badge">New</span>
-                    <!-- Heart/Wishlist REMOVED -->
+           
                 </div>
                 <div class="al-prod-card__body">
                     <div class="al-prod-card__cat">Foundation</div>
@@ -226,7 +226,7 @@
                     <div class="al-prod-card__footer">
                         <span class="al-prod-card__price">Rs 1,299</span>
                         <form method="post" action="${pageContext.request.contextPath}/AddToCartServlet" style="display:inline;">
-                            <input type="hidden" name="productId" value="2" />
+                            <input type="hidden" name="productId" value="PRD002" />
                             <button type="submit" class="al-prod-card__add">Add to Cart</button>
                         </form>
                     </div>
@@ -243,12 +243,12 @@
                 </div>
                 <div class="al-prod-card__body">
                     <div class="al-prod-card__cat">Eye Makeup</div>
-                    <div class="al-prod-card__name">Drama Queen Mascara</div>
+                    <div class="al-prod-card__name">Volume Boost Mascara</div>
                     <div class="al-prod-card__stars">★★★★☆</div>
                     <div class="al-prod-card__footer">
                         <span class="al-prod-card__price">Rs 699</span>
                         <form method="post" action="${pageContext.request.contextPath}/AddToCartServlet" style="display:inline;">
-                            <input type="hidden" name="productId" value="3" />
+                            <input type="hidden" name="productId" value="PRD005" />
                             <button type="submit" class="al-prod-card__add">Add to Cart</button>
                         </form>
                     </div>
