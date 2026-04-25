@@ -11,7 +11,7 @@
 </head>
 <body>
 
-<%@ include file="../components/navbar.jsp" %>
+<jsp:include page="/components/navbar.jsp" />
 
 <!-- ============================================================
      HERO
@@ -390,7 +390,7 @@
 
 <!-- READY TO GLOW SECTION REMOVED -->
 
-<%@ include file="../components/footer.jsp" %>
+<jsp:include page="/components/footer.jsp" />
 
 </body>
 </html>

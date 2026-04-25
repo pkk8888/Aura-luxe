@@ -3,7 +3,6 @@
 <welcome-file-list>
 <welcome-file>index.jsp</welcome-file>
 </welcome-file-list>
-<!--    ── Existing Servlets ───────────────────────────────────    -->
 <servlet>
 <servlet-name>FetchProductsServlet</servlet-name>
 <servlet-class>controller.servlet.FetchProductsServlet</servlet-class>
@@ -36,7 +35,6 @@
 <servlet-name>ProductDetailServlet</servlet-name>
 <url-pattern>/ProductDetailServlet</url-pattern>
 </servlet-mapping>
-<!--    ── NEW: Cart & Auth Servlets ──────────────────────────    -->
 <servlet>
 <servlet-name>AddToCartServlet</servlet-name>
 <servlet-class>controller.servlet.AddToCartServlet</servlet-class>
@@ -69,7 +67,6 @@
 <servlet-name>CheckoutServlet</servlet-name>
 <url-pattern>/CheckoutServlet</url-pattern>
 </servlet-mapping>
-<!--    ── NEW: Place Order Servlet ───────────────────────────  -->
 <servlet>
 <servlet-name>PlaceOrderServlet</servlet-name>
 <servlet-class>controller.servlet.PlaceOrderServlet</servlet-class>
@@ -77,5 +74,29 @@
 <servlet-mapping>
 <servlet-name>PlaceOrderServlet</servlet-name>
 <url-pattern>/PlaceOrderServlet</url-pattern>
+</servlet-mapping>
+<servlet>
+<servlet-name>ProfileServlet</servlet-name>
+<servlet-class>controller.servlet.ProfileServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>ProfileServlet</servlet-name>
+<url-pattern>/ProfileServlet</url-pattern>
+</servlet-mapping>
+<servlet>
+<servlet-name>EditProfileServlet</servlet-name>
+<servlet-class>controller.servlet.EditProfileServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>EditProfileServlet</servlet-name>
+<url-pattern>/EditProfileServlet</url-pattern>
+</servlet-mapping>
+<servlet>
+<servlet-name>ChangePasswordServlet</servlet-name>
+<servlet-class>controller.servlet.ChangePasswordServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>ChangePasswordServlet</servlet-name>
+<url-pattern>/ChangePasswordServlet</url-pattern>
 </servlet-mapping>
 </web-app>

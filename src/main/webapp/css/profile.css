@@ -1,0 +1,225 @@
+/* ============================================================
+   AuraLuxe — profile.css
+   Shared styles for: profile.jsp, edit-profile.jsp, change-password.jsp
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Raleway:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --al-deep:    #1a0a0f;
+    --al-dark:    #4a1020;
+    --al-primary: #8b2442;
+    --al-mid:     #c4687d;
+    --al-light:   #e8a0b0;
+    --al-cream:   #fdf8f9;
+    --al-white:   #ffffff;
+    --al-text:    #2a0a12;
+    --al-muted:   #906070;
+    --al-serif:   'Playfair Display', serif;
+    --al-sans:    'Raleway', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--al-sans);
+    background: var(--al-cream);
+    color: var(--al-text);
+    padding-top: 70px;
+    min-height: 100vh;
+}
+
+/* ── Page Header ───────────────────────────────────────────── */
+.pf-header {
+    background: linear-gradient(135deg, var(--al-deep) 0%, var(--al-dark) 100%);
+    color: var(--al-white);
+    padding: 48px 32px 38px;
+    text-align: center;
+}
+.pf-header__eyebrow {
+    display: block;
+    font-size: 10px; font-weight: 600; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--al-mid);
+    margin-bottom: 10px;
+}
+.pf-header__title {
+    font-family: var(--al-serif); font-size: 36px; font-weight: 700;
+    line-height: 1.1; margin-bottom: 8px;
+}
+.pf-header__sub {
+    font-size: 14px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px;
+}
+
+/* ── Layout ────────────────────────────────────────────────── */
+.pf-layout {
+    max-width: 1000px; margin: 40px auto 80px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 28px;
+    align-items: start;
+}
+@media (max-width: 760px) { .pf-layout { grid-template-columns: 1fr; } }
+
+/* ── Sidebar ───────────────────────────────────────────────── */
+.pf-sidebar {
+    background: var(--al-white);
+    border-radius: 20px;
+    padding: 28px 20px;
+    box-shadow: 0 2px 20px rgba(139,36,66,0.07);
+    position: sticky; top: 90px;
+}
+
+.pf-avatar {
+    text-align: center; margin-bottom: 20px;
+}
+.pf-avatar__circle {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--al-primary), var(--al-mid));
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+    font-family: var(--al-serif); font-size: 32px; font-weight: 700;
+    color: var(--al-white);
+    box-shadow: 0 4px 16px rgba(139,36,66,0.3);
+}
+.pf-avatar__name {
+    font-family: var(--al-serif); font-size: 17px; font-weight: 700;
+    color: var(--al-text); margin-bottom: 4px;
+}
+.pf-avatar__id {
+    font-size: 11px; color: var(--al-muted); letter-spacing: 1px;
+}
+
+.pf-nav { display: flex; flex-direction: column; gap: 4px; margin-top: 20px; }
+.pf-nav__link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 14px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
+    color: var(--al-muted); text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+.pf-nav__link:hover { background: rgba(196,104,125,0.08); color: var(--al-primary); }
+.pf-nav__link--active { background: rgba(139,36,66,0.08); color: var(--al-primary); }
+.pf-nav__icon { font-size: 16px; flex-shrink: 0; }
+
+.pf-nav__divider { height: 1px; background: rgba(196,104,125,0.12); margin: 8px 0; }
+
+/* ── Main content card ─────────────────────────────────────── */
+.pf-card {
+    background: var(--al-white);
+    border-radius: 20px;
+    padding: 32px 30px;
+    box-shadow: 0 2px 20px rgba(139,36,66,0.07);
+}
+.pf-card__head {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 28px; padding-bottom: 20px;
+    border-bottom: 1px solid rgba(196,104,125,0.12);
+}
+.pf-card__icon { font-size: 22px; }
+.pf-card__title {
+    font-family: var(--al-serif); font-size: 22px; font-weight: 700;
+}
+.pf-card__subtitle {
+    font-size: 12px; color: var(--al-muted); margin-top: 2px;
+}
+
+/* ── Info rows (profile view) ──────────────────────────────── */
+.pf-info { display: flex; flex-direction: column; gap: 0; }
+.pf-info__row {
+    display: flex; align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(196,104,125,0.08);
+}
+.pf-info__row:last-child { border-bottom: none; }
+.pf-info__label {
+    width: 140px; flex-shrink: 0;
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--al-muted);
+}
+.pf-info__value {
+    flex: 1; font-size: 14px; font-weight: 500; color: var(--al-text);
+}
+.pf-info__empty { color: var(--al-muted); font-style: italic; }
+
+/* ── Form fields ───────────────────────────────────────────── */
+.pf-form { display: flex; flex-direction: column; gap: 20px; }
+.pf-form-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+}
+@media (max-width: 560px) { .pf-form-row { grid-template-columns: 1fr; } }
+
+.pf-field { display: flex; flex-direction: column; gap: 7px; }
+.pf-field--full { grid-column: 1 / -1; }
+
+.pf-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--al-muted);
+}
+.pf-req { color: var(--al-primary); }
+
+.pf-input {
+    border: 1.5px solid rgba(196,104,125,0.25);
+    border-radius: 10px; padding: 12px 14px;
+    font-family: var(--al-sans); font-size: 14px; color: var(--al-text);
+    background: var(--al-cream); outline: none; width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.pf-input:focus {
+    border-color: var(--al-mid);
+    box-shadow: 0 0 0 3px rgba(196,104,125,0.12);
+    background: var(--al-white);
+}
+.pf-input:disabled {
+    opacity: 0.6; cursor: not-allowed;
+}
+
+.pf-input-hint {
+    font-size: 11px; color: var(--al-muted); margin-top: 2px;
+}
+
+/* ── Password strength bar ─────────────────────────────────── */
+.pf-strength { margin-top: 6px; }
+.pf-strength__bar {
+    height: 4px; border-radius: 2px;
+    background: rgba(196,104,125,0.15); overflow: hidden; margin-bottom: 5px;
+}
+.pf-strength__fill {
+    height: 100%; border-radius: 2px; width: 0;
+    transition: width 0.3s, background 0.3s;
+}
+.pf-strength__label { font-size: 11px; color: var(--al-muted); }
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.pf-actions {
+    display: flex; gap: 12px; align-items: center;
+    margin-top: 8px; flex-wrap: wrap;
+}
+.pf-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    border-radius: 12px; padding: 13px 28px;
+    font-family: var(--al-sans); font-size: 11px;
+    font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none; cursor: pointer; border: none;
+    transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.pf-btn--primary {
+    background: linear-gradient(135deg, var(--al-primary), var(--al-mid));
+    color: var(--al-white);
+    box-shadow: 0 4px 16px rgba(139,36,66,0.2);
+}
+.pf-btn--primary:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,36,66,0.3); }
+.pf-btn--ghost {
+    background: transparent; color: var(--al-mid);
+    border: 1.5px solid rgba(196,104,125,0.3);
+}
+.pf-btn--ghost:hover { border-color: var(--al-mid); background: rgba(196,104,125,0.05); }
+
+/* ── Alert banners ─────────────────────────────────────────── */
+.pf-alert {
+    display: flex; align-items: center; gap: 10px;
+    border-radius: 10px; padding: 14px 18px;
+    font-size: 13px; font-weight: 500; margin-bottom: 20px;
+}
+.pf-alert--success { background: #f0faf4; border: 1px solid #b7e4c7; color: #1a6b3a; }
+.pf-alert--error   { background: #fff0f3; border: 1px solid #f5c6d0; color: #8b2442; }
