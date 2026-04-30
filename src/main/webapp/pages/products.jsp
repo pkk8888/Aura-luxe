@@ -31,14 +31,7 @@
 </script>
 
 
-<!-- ============================================================
-     PAGE HEADER
-     ============================================================ -->
-<div class="shop-header">
-    <span class="shop-header__label">AuraLuxe Collection</span>
-    <h1 class="shop-header__title">Shop All Products</h1>
-    <p class="shop-header__sub">Discover premium makeup crafted to bring out your natural beauty</p>
-</div>
+
 
 
 <!-- ============================================================
@@ -72,42 +65,7 @@
             />
         </form>
 
-        <!-- Category filters -->
-        <div class="shop-filters">
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet"
-               class="shop-filter-btn <%= selectedCat.isEmpty() && searchQuery.isEmpty() ? "active" : "" %>">
-                All
-            </a>
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=lipstick"
-               class="shop-filter-btn <%= selectedCat.equalsIgnoreCase("lipstick") ? "active" : "" %>">
-                Lips
-            </a>
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=foundation"
-               class="shop-filter-btn <%= selectedCat.equalsIgnoreCase("foundation") ? "active" : "" %>">
-                Foundation
-            </a>
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=eyeshadow"
-               class="shop-filter-btn <%= selectedCat.equalsIgnoreCase("eyeshadow") ? "active" : "" %>">
-                Eyes
-            </a>
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=blush"
-               class="shop-filter-btn <%= selectedCat.equalsIgnoreCase("blush") ? "active" : "" %>">
-                Blush
-            </a>
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=highlighter"
-               class="shop-filter-btn <%= selectedCat.equalsIgnoreCase("highlighter") ? "active" : "" %>">
-                Highlighter
-            </a>
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=mascara"
-               class="shop-filter-btn <%= selectedCat.equalsIgnoreCase("mascara") ? "active" : "" %>">
-                Mascara
-            </a>
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=primer"
-               class="shop-filter-btn <%= selectedCat.equalsIgnoreCase("primer") ? "active" : "" %>">
-                Primer
-            </a>
-        </div>
-
+       
         <!-- Count -->
         <span class="shop-count"><%= totalProducts %> product<%= totalProducts != 1 ? "s" : "" %></span>
     </div>
@@ -236,12 +194,6 @@
     </div>
 </div>
 
-<style>
-@keyframes alFadeUp {
-    from { opacity:0; transform:translateY(30px); }
-    to   { opacity:1; transform:translateY(0); }
-}
-</style>
 
 
 <!-- ============================================================

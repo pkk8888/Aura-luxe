@@ -27,36 +27,6 @@ body {
     overflow-x: hidden;
 }
 
-/* ── Page header ───────────────────────────────────────────── */
-.shop-header {
-    background: linear-gradient(160deg, var(--al-deep) 0%, var(--al-dark) 50%, var(--al-primary) 100%);
-    padding: 120px 32px 60px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-.shop-header::before {
-    content: '';
-    position: absolute; top: -150px; right: -150px;
-    width: 500px; height: 500px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(196,104,125,0.2) 0%, transparent 70%);
-    pointer-events: none;
-}
-.shop-header__label {
-    font-size: 10px; font-weight: 600; letter-spacing: 4px;
-    text-transform: uppercase; color: var(--al-light);
-    display: block; margin-bottom: 12px;
-}
-.shop-header__title {
-    font-family: var(--al-serif);
-    font-size: clamp(32px, 5vw, 56px);
-    font-weight: 700; color: var(--al-white); line-height: 1.1;
-    margin-bottom: 14px;
-}
-.shop-header__sub {
-    font-size: 15px; color: rgba(255,255,255,0.6);
-    max-width: 480px; margin: 0 auto;
-}
 
 /* ── Controls bar ──────────────────────────────────────────── */
 .shop-controls {
@@ -150,10 +120,7 @@ body {
     display: flex; flex-direction: column;
     position: relative;
 }
-.prod-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 48px rgba(139,36,66,0.16);
-}
+
 
 /* Image area */
 .prod-card__img-wrap {

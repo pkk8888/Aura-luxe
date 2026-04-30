@@ -23,10 +23,6 @@
 
     <div class="al-hero__inner">
         <div class="al-hero__content">
-            <div class="al-hero__badge">
-                <span class="al-hero__badge-dot"></span>
-                New Collection 2026
-            </div>
             <h1 class="al-hero__title">
                 Redefine Your
                 <em>Beauty Story</em>
@@ -40,9 +36,6 @@
                 <a href="${pageContext.request.contextPath}/FetchProductsServlet" class="al-btn al-btn--solid">
                     Shop Now
                 </a>
-                <a href="#collections" class="al-btn al-btn--light">
-                    View Collections
-                </a>
             </div>
         </div>
 
@@ -52,18 +45,9 @@
                 <img src="${pageContext.request.contextPath}/images/hero-product.png"
                     alt="AuraLuxe Hero Product"
                     style="width:100%; height:100%; object-fit:cover; border-radius:50% 40% 50% 40%;" />
-                <div class="al-hero__stat al-hero__stat--1">
-                    <div class="al-hero__stat-num">500+</div>
-                    <div class="al-hero__stat-label">Products</div>
-                </div>
-                <div class="al-hero__stat al-hero__stat--2">
-                    <div class="al-hero__stat-num">4.9★</div>
-                    <div class="al-hero__stat-label">Rating</div>
-                </div>
             </div>
         </div>
     </div>
-    <!-- Scroll hint REMOVED -->
 </section>
 
 
@@ -74,7 +58,7 @@
     <div class="al-marquee-inner">
         <span>Free Shipping Over Rs 2000</span><span class="al-marquee-sep">✦</span>
         <span>New Arrivals Every Week</span><span class="al-marquee-sep">✦</span>
-        <span>Cruelty Free &amp; Vegan</span><span class="al-marquee-sep">✦</span>
+        <span>Cruelty Free Vegan</span><span class="al-marquee-sep">✦</span>
         <span>100% Authentic Products</span><span class="al-marquee-sep">✦</span>
         <span>Premium Makeup Collection</span><span class="al-marquee-sep">✦</span>
         <span>Free Shipping Over Rs 2000</span><span class="al-marquee-sep">✦</span>
@@ -86,80 +70,6 @@
 </div>
 
 
-<!-- ============================================================
-     CATEGORIES
-     ============================================================ -->
-<section class="al-categories" id="collections">
-    <div class="al-container">
-        <div class="al-categories__head">
-            <span class="al-section-label">Browse by Category</span>
-            <h2 class="al-section-title">Shop by Collection</h2>
-            <p class="al-section-sub" style="margin: 0 auto;">
-                Explore our curated categories crafted to elevate every look —
-                from everyday glow to show-stopping glamour.
-            </p>
-        </div>
-
-        <div class="al-categories__grid">
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=lips"
-               class="al-cat-card al-cat-card--lips">
-                <div class="al-cat-card__img">
-                    <img src="${pageContext.request.contextPath}/images/category-lips.jpg"
-                         alt="Lip Colour" style="width:100%; height:100%; object-fit:cover;" />
-                </div>
-                <div class="al-cat-card__body">
-                    <div class="al-cat-card__name">Lip Colour</div>
-                    <div class="al-cat-card__count">Lipsticks, Glosses &amp; More</div>
-                </div>
-                <div class="al-cat-card__arrow">→</div>
-            </a>
-
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=eyes"
-               class="al-cat-card al-cat-card--eyes">
-                <div class="al-cat-card__img">
-                    <img src="${pageContext.request.contextPath}/images/category-eye.jpg"
-                         alt="Eye Makeup" style="width:100%; height:100%; object-fit:cover;" />
-                </div>
-                <div class="al-cat-card__body">
-                    <div class="al-cat-card__name">Eye Makeup</div>
-                    <div class="al-cat-card__count">Mascara, Liner &amp; Shadows</div>
-                </div>
-                <div class="al-cat-card__arrow">→</div>
-            </a>
-
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=face"
-               class="al-cat-card al-cat-card--face">
-                <div class="al-cat-card__img">
-                    <img src="${pageContext.request.contextPath}/images/category-face.jpg"
-                         alt="Face" style="width:100%; height:100%; object-fit:cover;" />
-                </div>
-                <div class="al-cat-card__body">
-                    <div class="al-cat-card__name">Face</div>
-                    <div class="al-cat-card__count">Foundation, Blush &amp; Contour</div>
-                </div>
-                <div class="al-cat-card__arrow">→</div>
-            </a>
-
-            <a href="${pageContext.request.contextPath}/FetchProductsServlet?category=skincare"
-               class="al-cat-card al-cat-card--skin">
-                <div class="al-cat-card__img">
-                    <img src="${pageContext.request.contextPath}/images/category-skincare.jpg"
-                         alt="Skincare" style="width:100%; height:100%; object-fit:cover;" />
-                </div>
-                <div class="al-cat-card__body">
-                    <div class="al-cat-card__name">Skincare</div>
-                    <div class="al-cat-card__count">Serums, Moisturisers &amp; More</div>
-                </div>
-                <div class="al-cat-card__arrow">→</div>
-            </a>
-        </div>
-    </div>
-</section>
-
-
-<!-- ============================================================
-     FEATURED PRODUCTS - Now connected to real DB products
-     ============================================================ -->
 <section class="al-products">
     <div class="al-container">
         <div class="al-products__head">
@@ -282,51 +192,6 @@
 </section>
 
 
-<!-- ============================================================
-     ABOUT / BRAND STORY
-     ============================================================ -->
-<section class="al-about" id="about">
-    <div class="al-container">
-        <div class="al-about__inner">
-            <div class="al-about__body">
-                <span class="al-section-label">Our Story</span>
-                <h2 class="al-section-title">Beauty Crafted with Purpose</h2>
-                <div class="al-section-sub">
-                    AuraLuxe was born from a belief that every woman deserves makeup
-                    that feels as good as it looks. We combine science and artistry
-                    to bring you formulas that are kind to your skin and bold in expression.
-                </div>
-                <p>
-                    Each product in our collection is dermatologist-tested, cruelty-free,
-                    and crafted with the finest ingredients sourced from around the world.
-                    We believe beauty should be inclusive, empowering, and effortless.
-                </p>
-                <div class="al-about__cta">
-                    <a href="#" class="al-btn al-btn--light">Learn More</a>
-                </div>
-            </div>
-
-            <div class="al-about__stats">
-                <div class="al-about__stat">
-                    <div class="al-about__stat-num">10K+</div>
-                    <div class="al-about__stat-label">Happy Customers</div>
-                </div>
-                <div class="al-about__stat">
-                    <div class="al-about__stat-num">500+</div>
-                    <div class="al-about__stat-label">Products</div>
-                </div>
-                <div class="al-about__stat">
-                    <div class="al-about__stat-num">100%</div>
-                    <div class="al-about__stat-label">Cruelty Free</div>
-                </div>
-                <div class="al-about__stat">
-                    <div class="al-about__stat-num">5★</div>
-                    <div class="al-about__stat-label">Avg. Rating</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 
 <!-- ============================================================

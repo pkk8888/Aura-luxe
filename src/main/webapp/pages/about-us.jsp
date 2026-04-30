@@ -12,49 +12,6 @@
 
 <jsp:include page="/components/navbar.jsp" />
 
-<%-- HERO --%>
-<section class="ab-hero">
-    <div class="ab-hero__bg-text" aria-hidden="true">AURA</div>
-    <div class="ab-hero__content">
-        <span class="ab-hero__eyebrow">✦ Our Story ✦</span>
-        <h1 class="ab-hero__title">Beauty Crafted<br/><em>With Passion</em></h1>
-        <p class="ab-hero__desc">
-            AuraLuxe was born from a shared dream — five students who believed that premium beauty
-            should be accessible, honest, and empowering. We are developers, designers, and dreamers
-            united by our love for craft.
-        </p>
-        <div class="ab-hero__stats">
-            <div class="ab-hero__stat"><span class="ab-hero__stat-num">5</span><span class="ab-hero__stat-label">Creators</span></div>
-            <div class="ab-hero__stat-divider"></div>
-            <div class="ab-hero__stat"><span class="ab-hero__stat-num">1</span><span class="ab-hero__stat-label">Vision</span></div>
-            <div class="ab-hero__stat-divider"></div>
-            <div class="ab-hero__stat"><span class="ab-hero__stat-num">∞</span><span class="ab-hero__stat-label">Passion</span></div>
-        </div>
-    </div>
-    <div class="ab-hero__orb ab-hero__orb--1"></div>
-    <div class="ab-hero__orb ab-hero__orb--2"></div>
-</section>
-
-<%-- MISSION --%>
-<section class="ab-mission">
-    <div class="ab-mission__inner">
-        <div class="ab-mission__card">
-            <span class="ab-mission__icon">💄</span>
-            <h3 class="ab-mission__title">Our Mission</h3>
-            <p class="ab-mission__text">To bring luxury beauty products to every doorstep in Nepal — curated with care, delivered with love.</p>
-        </div>
-        <div class="ab-mission__card">
-            <span class="ab-mission__icon">✨</span>
-            <h3 class="ab-mission__title">Our Vision</h3>
-            <p class="ab-mission__text">A Nepal where every person can access world-class beauty products without compromise on quality or price.</p>
-        </div>
-        <div class="ab-mission__card">
-            <span class="ab-mission__icon">🌸</span>
-            <h3 class="ab-mission__title">Our Values</h3>
-            <p class="ab-mission__text">Authenticity, inclusivity, and elegance guide every decision we make — from code to customer experience.</p>
-        </div>
-    </div>
-</section>
 
 <%-- TEAM --%>
 <section class="ab-team">

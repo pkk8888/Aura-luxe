@@ -28,135 +28,7 @@ body {
     padding-top: 70px;
 }
 
-/* ── HERO ──────────────────────────────────────────────────── */
-.ab-hero {
-    position: relative;
-    background: linear-gradient(135deg, var(--al-deep) 0%, var(--al-dark) 55%, #6b1a2e 100%);
-    color: var(--al-white);
-    padding: 100px 32px 90px;
-    text-align: center;
-    overflow: hidden;
-}
 
-.ab-hero__bg-text {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: var(--al-serif);
-    font-size: clamp(80px, 18vw, 200px);
-    font-weight: 700;
-    color: rgba(255,255,255,0.03);
-    letter-spacing: 20px;
-    white-space: nowrap;
-    pointer-events: none;
-    user-select: none;
-}
-
-.ab-hero__content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
-
-.ab-hero__eyebrow {
-    display: inline-block;
-    font-size: 11px; font-weight: 600; letter-spacing: 4px;
-    text-transform: uppercase; color: var(--al-mid);
-    margin-bottom: 18px;
-    animation: fadeUp 0.7s ease both 0.2s;
-}
-.ab-hero__title {
-    font-family: var(--al-serif);
-    font-size: clamp(36px, 6vw, 60px);
-    font-weight: 700; line-height: 1.1;
-    margin-bottom: 20px;
-    animation: fadeUp 0.7s ease both 0.35s;
-}
-.ab-hero__title em {
-    font-style: italic; color: var(--al-light);
-}
-.ab-hero__desc {
-    font-size: 15px; line-height: 1.8;
-    color: rgba(255,255,255,0.55);
-    max-width: 560px; margin: 0 auto 40px;
-    animation: fadeUp 0.7s ease both 0.5s;
-}
-
-/* Stats row */
-.ab-hero__stats {
-    display: flex; align-items: center; justify-content: center; gap: 0;
-    animation: fadeUp 0.7s ease both 0.65s;
-}
-.ab-hero__stat { text-align: center; padding: 0 32px; }
-.ab-hero__stat-num {
-    display: block;
-    font-family: var(--al-serif); font-size: 40px; font-weight: 700;
-    color: var(--al-white); line-height: 1;
-    margin-bottom: 4px;
-}
-.ab-hero__stat-label {
-    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-    color: var(--al-mid); font-weight: 600;
-}
-.ab-hero__stat-divider {
-    width: 1px; height: 48px;
-    background: rgba(196,104,125,0.3);
-}
-
-/* Floating orbs */
-.ab-hero__orb {
-    position: absolute; border-radius: 50%;
-    pointer-events: none;
-    animation: floatOrb 10s ease-in-out infinite;
-}
-.ab-hero__orb--1 {
-    width: 320px; height: 320px;
-    background: radial-gradient(circle, rgba(196,104,125,0.12) 0%, transparent 70%);
-    top: -80px; right: -80px;
-    animation-duration: 12s;
-}
-.ab-hero__orb--2 {
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(139,36,66,0.15) 0%, transparent 70%);
-    bottom: -60px; left: 5%;
-    animation-duration: 8s; animation-delay: 3s;
-}
-
-@keyframes floatOrb {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50%       { transform: translateY(-20px) scale(1.05); }
-}
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── MISSION ───────────────────────────────────────────────── */
-.ab-mission {
-    padding: 72px 24px;
-    background: var(--al-white);
-}
-.ab-mission__inner {
-    max-width: 960px; margin: 0 auto;
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-}
-@media (max-width: 700px) { .ab-mission__inner { grid-template-columns: 1fr; } }
-
-.ab-mission__card {
-    text-align: center; padding: 36px 28px;
-    border: 1px solid rgba(196,104,125,0.12);
-    border-radius: 20px;
-    transition: transform 0.25s, box-shadow 0.25s;
-}
-.ab-mission__card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 32px rgba(139,36,66,0.1);
-}
-.ab-mission__icon { font-size: 36px; display: block; margin-bottom: 16px; }
-.ab-mission__title {
-    font-family: var(--al-serif); font-size: 20px; font-weight: 700;
-    color: var(--al-text); margin-bottom: 12px;
-}
-.ab-mission__text {
-    font-size: 13px; line-height: 1.8; color: var(--al-muted);
-}
 
 /* ── TEAM ──────────────────────────────────────────────────── */
 .ab-team {
@@ -311,9 +183,6 @@ body {
 }
 .ab-btn--ghost:hover { border-color: var(--al-light); background: rgba(196,104,125,0.08); }
 
-/* ── CONTACT BODY ──────────────────────────────────────────── */
-.ct-body { padding: 72px 24px; }
-.ct-body__inner { max-width: 1000px; margin: 0 auto; }
 
 /* Info cards */
 .ct-info {

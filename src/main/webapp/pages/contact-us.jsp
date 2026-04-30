@@ -15,53 +15,7 @@
 
 <jsp:include page="/components/navbar.jsp" />
 
-<%-- ── HERO ─────────────────────────────────────────────────── --%>
-<section class="ab-hero ab-hero--contact">
-    <div class="ab-hero__bg-text" aria-hidden="true">HELLO</div>
-    <div class="ab-hero__content">
-        <span class="ab-hero__eyebrow">✦ Get In Touch ✦</span>
-        <h1 class="ab-hero__title">We'd Love To<br/><em>Hear From You</em></h1>
-        <p class="ab-hero__desc">
-            Whether you have a question about your order, a product query, or just want to say hello —
-            our team is always happy to help.
-        </p>
-    </div>
-    <div class="ab-hero__orb ab-hero__orb--1"></div>
-    <div class="ab-hero__orb ab-hero__orb--2"></div>
-</section>
 
-<%-- ── CONTACT BODY ────────────────────────────────────────── --%>
-<section class="ct-body">
-    <div class="ct-body__inner">
-
-        <%-- Contact Info cards --%>
-        <div class="ct-info">
-
-            <div class="ct-info__card">
-                <span class="ct-info__icon">📍</span>
-                <h3 class="ct-info__title">Our Location</h3>
-                <p class="ct-info__text">Pokhara, Gandaki Province<br/>Nepal 🇳🇵</p>
-            </div>
-
-            <div class="ct-info__card">
-                <span class="ct-info__icon">📧</span>
-                <h3 class="ct-info__title">Email Us</h3>
-                <p class="ct-info__text">hello@auraluxe.com<br/>support@auraluxe.com</p>
-            </div>
-
-            <div class="ct-info__card">
-                <span class="ct-info__icon">📞</span>
-                <h3 class="ct-info__title">Call Us</h3>
-                <p class="ct-info__text">+977 9805388883<br/>Mon – Sat, 10am – 6pm</p>
-            </div>
-
-            <div class="ct-info__card">
-                <span class="ct-info__icon">🕐</span>
-                <h3 class="ct-info__title">Working Hours</h3>
-                <p class="ct-info__text">Sunday – Friday<br/>10:00 AM – 6:00 PM NPT</p>
-            </div>
-
-        </div>
 
         <%-- Contact Form --%>
         <div class="ct-form-wrap">
@@ -124,34 +78,6 @@
     </div>
 </section>
 
-<%-- ── SOCIALS ──────────────────────────────────────────────── --%>
-<section class="ct-social">
-    <div class="ct-social__inner">
-        <p class="ct-social__label">Follow us on social media</p>
-        <div class="ct-social__links">
-            <a href="#" class="ct-social__link" title="Instagram">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                    <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/>
-                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-                </svg>
-                Instagram
-            </a>
-            <a href="#" class="ct-social__link" title="Facebook">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
-                </svg>
-                Facebook
-            </a>
-            <a href="#" class="ct-social__link" title="TikTok">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/>
-                </svg>
-                TikTok
-            </a>
-        </div>
-    </div>
-</section>
 
 <jsp:include page="/components/footer.jsp" />
 
