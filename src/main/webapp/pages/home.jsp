@@ -100,7 +100,7 @@
             <!-- Card 1 -->
             <div class="al-prod-card al-prod-card--1">
                 <div class="al-prod-card__img">
-                    <img src="${pageContext.request.contextPath}/images/lipstick.jpg"
+                    <img src="${pageContext.request.contextPath}/images/macLipstick.jpg"
                          alt="Velvet Rose Lip Crème"
                          style="width:100%; height:100%; object-fit:cover;" />
                     <span class="al-prod-card__badge">Bestseller</span>
@@ -123,7 +123,7 @@
             <!-- Card 2 -->
             <div class="al-prod-card al-prod-card--2">
                 <div class="al-prod-card__img">
-                    <img src="${pageContext.request.contextPath}/images/foundation.jpg"
+                    <img src="${pageContext.request.contextPath}/images/FlawlessFoundation.jpg"
                          alt="Luminous Skin Foundation"
                          style="width:100%; height:100%; object-fit:cover;" />
                     <span class="al-prod-card__badge">New</span>
@@ -131,7 +131,7 @@
                 </div>
                 <div class="al-prod-card__body">
                     <div class="al-prod-card__cat">Foundation</div>
-                    <div class="al-prod-card__name">Luminous Skin Foundation</div>
+                    <div class="al-prod-card__name">Flawless Fit Foundation SPF 15</div>
                     <div class="al-prod-card__stars">★★★★★</div>
                     <div class="al-prod-card__footer">
                         <span class="al-prod-card__price">Rs 1,299</span>

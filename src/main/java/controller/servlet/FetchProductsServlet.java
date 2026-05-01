@@ -22,7 +22,7 @@ import util.StringUtils;
  * FetchProductsServlet
  * Handles GET /FetchProductsServlet
  * Fetches all products (optionally filtered by category or search)
- * and forwards to products.jsp
+ * and forwards to products.jsp. Also fetches cart count for the navbar badge.
  */
 
 public class FetchProductsServlet extends HttpServlet {
@@ -41,6 +41,7 @@ public class FetchProductsServlet extends HttpServlet {
             return;
         }
 
+        String userId   = (String) session.getAttribute(StringUtils.SESSION_USER_ID);
         String category = request.getParameter("category"); // optional filter
         String search   = request.getParameter("search");   // optional search
 
@@ -52,19 +53,16 @@ public class FetchProductsServlet extends HttpServlet {
             PreparedStatement ps;
 
             if (search != null && !search.trim().isEmpty()) {
-                // Search by name
                 sql = "SELECT * FROM products WHERE product_name LIKE ? ORDER BY product_name";
                 ps  = conn.prepareStatement(sql);
                 ps.setString(1, "%" + search.trim() + "%");
 
             } else if (category != null && !category.trim().isEmpty()) {
-                // Filter by category (case-insensitive)
                 sql = "SELECT * FROM products WHERE LOWER(category) LIKE ? ORDER BY product_name";
                 ps  = conn.prepareStatement(sql);
                 ps.setString(1, "%" + category.trim().toLowerCase() + "%");
 
             } else {
-                // All products
                 sql = "SELECT * FROM products ORDER BY product_name";
                 ps  = conn.prepareStatement(sql);
             }
@@ -87,11 +85,20 @@ public class FetchProductsServlet extends HttpServlet {
             rs.close();
             ps.close();
 
+            // ── Fetch cart item count for navbar badge ────────────
+            int cartCount = 0;
+            try (PreparedStatement cs = conn.prepareStatement(StringUtils.GET_CART_COUNT)) {
+                cs.setString(1, userId);
+                try (ResultSet cr = cs.executeQuery()) {
+                    if (cr.next()) cartCount = cr.getInt("total");
+                }
+            }
+            request.setAttribute("cartCount", cartCount);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // Pass data to JSP
         request.setAttribute("products", products);
         request.setAttribute("selectedCategory", category != null ? category : "");
         request.setAttribute("searchQuery", search != null ? search : "");

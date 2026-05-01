@@ -235,7 +235,7 @@
                 %>
                 <div class="co-summary__item">
                     <div class="co-summary__item-img">
-                        <img src="<%= pimg %>" alt="<%= pname %>"
+                        <img src="${pageContext.request.contextPath}/images/<%= pimg %>" alt="<%= pname %>"
                              onerror="this.src='${pageContext.request.contextPath}/images/placeholder.jpg'" />
                         <span class="co-summary__item-qty"><%= qty %></span>
                     </div>

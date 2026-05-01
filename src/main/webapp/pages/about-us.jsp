@@ -46,7 +46,7 @@
             <!-- Prakriti Karki -->
             <div class="ab-member" style="--clr:#8b2442;">
                 <div class="ab-member__photo-wrap">
-                    <img src="https://randomuser.me/api/portraits/women/68.jpg"
+                    <img src="${pageContext.request.contextPath}/images/suan.jpg"
                          alt="Prakriti Karki"
                          class="ab-member__photo"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
@@ -54,7 +54,7 @@
                     <div class="ab-member__glow"></div>
                 </div>
                 <div class="ab-member__info">
-                    <h3 class="ab-member__name">Prakriti Karki</h3>
+                    <h3 class="ab-member__name">Suan Shrestha</h3>
                     <span class="ab-member__role">Frontend Developer</span>
                     <p class="ab-member__desc">Brings the AuraLuxe experience to life — crafting every pixel with elegance, responsiveness, and a keen eye for beauty.</p>
                     <div class="ab-member__tags">
@@ -66,7 +66,7 @@
             <!-- Swechha Khadka -->
           <div class="ab-member" style="--clr:#8b2442;">
                 <div class="ab-member__photo-wrap">
-                    <img src="https://randomuser.me/api/portraits/women/65.jpg"
+                     <img src="${pageContext.request.contextPath}/images/swechha.jpg"
                          alt="Swechha Khadka"
                          class="ab-member__photo"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
@@ -86,7 +86,7 @@
             <!-- Suan Shrestha -->
             <div class="ab-member" style="--clr:#c4687d;">
                 <div class="ab-member__photo-wrap">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg"
+                        <img src="${pageContext.request.contextPath}/images/prakriti.jpg"
                          alt="Suan Shrestha"
                          class="ab-member__photo"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
@@ -94,7 +94,7 @@
                     <div class="ab-member__glow"></div>
                 </div>
                 <div class="ab-member__info">
-                    <h3 class="ab-member__name">Suan Shrestha</h3>
+                    <h3 class="ab-member__name">Prakriti Karki</h3>
                     <span class="ab-member__role">Database Administrator</span>
                     <p class="ab-member__desc">Architects the data foundation of AuraLuxe — designing schemas, optimizing queries, and ensuring every byte is stored safely.</p>
                     <div class="ab-member__tags">
@@ -106,7 +106,7 @@
             <!-- Sunil Thapa -->
             <div class="ab-member" style="--clr:#8b2442;">
                 <div class="ab-member__photo-wrap">
-                    <img src="https://randomuser.me/api/portraits/men/52.jpg"
+                     <img src="${pageContext.request.contextPath}/images/sunil.jpg"
                          alt="Sunil Thapa"
                          class="ab-member__photo"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />

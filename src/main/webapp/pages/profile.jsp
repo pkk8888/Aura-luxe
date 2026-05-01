@@ -42,7 +42,6 @@
         <ul class="al-navbar__links">
             <li><a href="${pageContext.request.contextPath}/pages/home.jsp" class="al-navbar__link">Home</a></li>
             <li><a href="${pageContext.request.contextPath}/FetchProductsServlet" class="al-navbar__link">Shop</a></li>
-            <li><a href="${pageContext.request.contextPath}/pages/home.jsp#collections" class="al-navbar__link">Collections</a></li>
         </ul>
         <div class="al-navbar__actions">
             <span class="al-navbar__welcome">Hello, <%= fullName %></span>

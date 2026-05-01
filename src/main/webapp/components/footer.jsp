@@ -41,20 +41,12 @@
             <h4 class="al-footer__heading">Shop</h4>
             <ul class="al-footer__list">
                 <li><a href="${pageContext.request.contextPath}/FetchProductsServlet" class="al-footer__link">All Products</a></li>
-                <li><a href="#" class="al-footer__link">Lipsticks</a></li>
-                <li><a href="#" class="al-footer__link">Foundations</a></li>
-                <li><a href="#" class="al-footer__link">Eye Makeup</a></li>
-                <li><a href="#" class="al-footer__link">Skincare</a></li>
             </ul>
         </div>
 
         <div class="al-footer__col">
             <h4 class="al-footer__heading">Help</h4>
             <ul class="al-footer__list">
-                <li><a href="#" class="al-footer__link">FAQs</a></li>
-                <li><a href="#" class="al-footer__link">Shipping Info</a></li>
-                <li><a href="#" class="al-footer__link">Returns</a></li>
-                <li><a href="#" class="al-footer__link">Track Order</a></li>
                 <li><a href="#" class="al-footer__link">Contact Us</a></li>
             </ul>
         </div>

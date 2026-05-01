@@ -136,7 +136,7 @@
                     <div class="pf-field">
                         <label class="pf-label" for="fullName">Full Name <span class="pf-req">*</span></label>
                         <input type="text" id="fullName" name="fullName"
-                               class="pf-input" placeholder="e.g. Prakriti Karki"
+                               class="pf-input" placeholder="e.g. Pranisha K.C."
                                value="<%= fullName != null ? fullName : "" %>" required />
                     </div>
                     <div class="pf-field">

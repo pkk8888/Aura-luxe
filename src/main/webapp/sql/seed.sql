@@ -15,7 +15,7 @@ VALUES
     '3.0g',
     '24 months',
     1200.00,
-    'https://images.unsplash.com/photo-1586495777744-4e6232bf4080?w=500&q=80'
+    'macLipstick.jpg'
 ),
 (
     'PRD002',
@@ -27,7 +27,7 @@ VALUES
     '30ml',
     '24 months',
     2200.00,
-    'https://images.unsplash.com/photo-1631214524020-3c69f34a38a4?w=500&q=80'
+    'FlawlessFoundation.jpg'
 ),
 (
     'PRD003',
@@ -39,7 +39,7 @@ VALUES
     '14.2g',
     '30 months',
     3500.00,
-    'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500&q=80'
+    'NudeEyeshadow.jpg'
 ),
 (
     'PRD004',
@@ -51,7 +51,7 @@ VALUES
     '8.0g',
     '24 months',
     2800.00,
-    'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=500&q=80'
+    'fentyHighlighter.jpg'
 ),
 (
     'PRD005',
@@ -63,7 +63,7 @@ VALUES
     '10ml',
     '12 months',
     950.00,
-    'https://images.unsplash.com/photo-1583241800698-e8ab01830a52?w=500&q=80'
+    'mascara.jpg'
 ),
 (
     'PRD006',
@@ -75,7 +75,7 @@ VALUES
     '6.0g',
     '24 months',
     3200.00,
-    'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500&q=80'
+    'blush.jpg'
 ),
 (
     'PRD007',
@@ -87,7 +87,7 @@ VALUES
     '1.7ml',
     '18 months',
     1650.00,
-    'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=500&q=80'
+    'eyeliner.jpg'
 ),
 (
     'PRD008',
@@ -99,7 +99,7 @@ VALUES
     '30ml',
     '24 months',
     2600.00,
-    'https://images.unsplash.com/photo-1617897903246-719242758050?w=500&q=80'
+    'primer.jpg'
 ),
 (
     'PRD009',
@@ -111,7 +111,7 @@ VALUES
     '5.5ml',
     '18 months',
     1800.00,
-    'https://images.unsplash.com/photo-1574728902578-a2e0932cd49c?w=500&q=80'
+    'Cherrylipoil.jpg'
 ),
 (
     'PRD010',
@@ -123,5 +123,17 @@ VALUES
     '12.0g',
     '30 months',
     4100.00,
-    'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=500&q=80'
+    'contour.jpg'
+    ),
+    (
+    'PRD011',
+    'Glow Radiance Serum',
+    'Skincare',
+    NULL,
+    'AuraLuxe',
+    'Lightweight serum that boosts radiance and hydration. Enriched with Vitamin C and hyaluronic acid for glowing skin.',
+    '30ml',
+    '24 months',
+    1499.00,
+    'serum.jpg'
 );

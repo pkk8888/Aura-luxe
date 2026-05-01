@@ -4,7 +4,6 @@ import controller.DatabaseController;
 import util.StringUtils;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,9 +20,9 @@ import java.util.Map;
 
 /**
  * CartServlet
- * Handles GET /CartServlet
- * Loads the current user's cart items and forwards to cart.jsp.
- * Also handles POST for removing items or updating quantity.
+ * GET  /CartServlet          — shows the cart page (cart.jsp)
+ * GET  /CartServlet?remove=X — removes item, then shows cart
+ * GET  /CartServlet?updateId=X&qty=N — updates quantity, then shows cart
  */
 public class CartServlet extends HttpServlet {
 
@@ -35,7 +34,6 @@ public class CartServlet extends HttpServlet {
 
         HttpSession session = req.getSession(false);
 
-        // Not logged in → redirect to login
         if (session == null || session.getAttribute(StringUtils.SESSION_USER_ID) == null) {
             resp.sendRedirect(req.getContextPath() + StringUtils.LOGIN_PAGE + "?error=login_required");
             return;
@@ -43,7 +41,7 @@ public class CartServlet extends HttpServlet {
 
         String userId = (String) session.getAttribute(StringUtils.SESSION_USER_ID);
 
-        // ── Handle remove action from query param ─────────────────
+        // ── Handle remove ──────────────────────────────────────────
         String removeId = req.getParameter("remove");
         if (removeId != null && !removeId.isEmpty()) {
             try (Connection conn = db.getConnection();
@@ -63,7 +61,6 @@ public class CartServlet extends HttpServlet {
             try {
                 int qty = Integer.parseInt(updateQty);
                 if (qty <= 0) {
-                    // Remove if qty = 0
                     try (Connection conn = db.getConnection();
                          PreparedStatement st = conn.prepareStatement(StringUtils.REMOVE_FROM_CART)) {
                         st.setString(1, userId);
@@ -88,6 +85,7 @@ public class CartServlet extends HttpServlet {
         // ── Fetch cart items ──────────────────────────────────────
         List<Map<String, Object>> cartItems = new ArrayList<>();
         double grandTotal = 0;
+        int cartCount = 0;
 
         try (Connection conn = db.getConnection();
              PreparedStatement st = conn.prepareStatement(StringUtils.GET_CART_ITEMS)) {
@@ -106,6 +104,7 @@ public class CartServlet extends HttpServlet {
                     double lineTotal = rs.getDouble("price") * rs.getInt("quantity");
                     item.put("lineTotal", lineTotal);
                     grandTotal += lineTotal;
+                    cartCount++;
 
                     cartItems.add(item);
                 }
@@ -116,6 +115,7 @@ public class CartServlet extends HttpServlet {
 
         req.setAttribute("cartItems",  cartItems);
         req.setAttribute("grandTotal", grandTotal);
+        req.setAttribute("cartCount",  cartCount);   // for navbar badge
         req.getRequestDispatcher("/pages/cart.jsp").forward(req, resp);
     }
 

@@ -38,7 +38,7 @@
                     <div class="ct-form__row">
                         <div class="ct-form__field">
                             <label class="ct-form__label">Your Name <span class="ct-req">*</span></label>
-                            <input type="text" class="ct-form__input" placeholder="e.g. Prakriti Karki" required />
+                            <input type="text" class="ct-form__input" placeholder="e.g. Pranisha K.C." required />
                         </div>
                         <div class="ct-form__field">
                             <label class="ct-form__label">Email Address <span class="ct-req">*</span></label>
