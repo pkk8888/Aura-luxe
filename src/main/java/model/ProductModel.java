@@ -18,11 +18,29 @@ public class ProductModel {
     private String image;
 
     // ── Getters ────────────────────────────────────────────────────
-    public String getProductId()   { return productId; }
-    public String getProductName() { return productName; }
-    public String getCategory()    { return category; }
-    public String getShade()       { return shade; }
-    public String getBrand()       { return brand; }
+    public String getProductId() 
+    { 
+    	return productId;
+    	}
+    
+    public String getProductName() 
+    { 
+    	return productName;
+    }
+    
+    public String getCategory()  
+    {
+    	return category;
+    	}
+    
+    public String getShade()   
+    { 
+    	return shade;
+    }
+    public String getBrand()  
+    {
+    	return brand;
+    	}
     public String getFeatures()    { return features; }
     public String getNetWeight()   { return netWeight; }
     public String getShelfLife()   { return shelfLife; }
