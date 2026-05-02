@@ -37,6 +37,7 @@ public class RegisterServlet extends HttpServlet {
         String password    = request.getParameter("password");
         String confirmPass = request.getParameter("confirmPassword");
         String role        = request.getParameter("role");
+        String address     = request.getParameter("address");
 
         // ── 2. Null safety - trim all fields ──────────────────────
         userId      = (userId      != null) ? userId.trim()      : "";
@@ -138,7 +139,7 @@ public class RegisterServlet extends HttpServlet {
 
         // ── 14. Build UsersModel and save to database ──────────────
         UsersModel newUser = new UsersModel(
-            userId, fullName, email, encryptedPassword, phoneNumber, role
+                userId, fullName, email, encryptedPassword, phoneNumber, role, address
         );
 
         int result = db.registerUser(newUser);

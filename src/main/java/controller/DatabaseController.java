@@ -150,7 +150,6 @@ public class DatabaseController {
                     user.setPhoneNumber(rs.getString("phone_number"));
                     user.setRole(rs.getString("role"));
                     user.setAddress(rs.getString("address"));
-                    user.setImgLink(rs.getString("img_link"));
                     return user;
                 }
             }

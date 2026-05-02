@@ -1,58 +1,84 @@
 package model;
 
-/**
- * UsersModel
- * Represents one row from the 'users' table.
- * Used to pass user data between DatabaseController and Servlets.
- */
 public class UsersModel {
 
-    private String userId;
-    private String fullName;
-    private String email;
-    private String password;
-    private String phoneNumber;
-    private String role;
-    private String address;
-    private String imgLink;
+	private String userId;
+	private String fullName;
+	private String email;
+	private String password;
+	private String phoneNumber;
+	private String role;
+	private String address;
 
-    // ── Default constructor ────────────────────────────────────────
-    public UsersModel() {}
+	// Constructors
+	public UsersModel() {
+	}
 
-    // ── Constructor used during registration ───────────────────────
-    public UsersModel(String userId, String fullName, String email,
-                      String password, String phoneNumber, String role) {
-        this.userId      = userId;
-        this.fullName    = fullName;
-        this.email       = email;
-        this.password    = password;
-        this.phoneNumber = phoneNumber;
-        this.role        = role;
-    }
+	public UsersModel(String userId, String fullName, String email,
+			String password, String phoneNumber, String role, String address) {
+		this.userId = userId;
+		this.fullName = fullName;
+		this.email = email;
+		this.password = password;
+		this.phoneNumber = phoneNumber;
+		this.role = role;
+		this.address = address;
+	}
 
-    // ── Getters and Setters ────────────────────────────────────────
+	// Getters and Setters
+	public String getUserId() {
+		return userId;
+	}
 
-    public String getUserId()             { return userId; }
-    public void   setUserId(String v)     { this.userId = v; }
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
-    public String getFullName()           { return fullName; }
-    public void   setFullName(String v)   { this.fullName = v; }
+	public String getFullName() {
+		return fullName;
+	}
 
-    public String getEmail()              { return email; }
-    public void   setEmail(String v)      { this.email = v; }
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
 
-    public String getPassword()           { return password; }
-    public void   setPassword(String v)   { this.password = v; }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getPhoneNumber()        { return phoneNumber; }
-    public void   setPhoneNumber(String v){ this.phoneNumber = v; }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getRole()               { return role; }
-    public void   setRole(String v)       { this.role = v; }
+	public String getPassword() {
+		return password;
+	}
 
-    public String getAddress()            { return address; }
-    public void   setAddress(String v)    { this.address = v; }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public String getImgLink()            { return imgLink; }
-    public void   setImgLink(String v)    { this.imgLink = v; }
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 }
