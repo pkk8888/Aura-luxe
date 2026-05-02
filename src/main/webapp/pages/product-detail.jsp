@@ -45,7 +45,7 @@
     <main class="detail-main">
 
         <div class="detail-img-wrap">
-            <img src="<%= p.getImage() %>"
+            <img src="${pageContext.request.contextPath}/images/<%= p.getImage() %>"
                  alt="<%= p.getProductName() %>"
                  onerror="this.src='${pageContext.request.contextPath}/images/placeholder.jpg'" />
         </div>

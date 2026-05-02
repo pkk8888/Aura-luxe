@@ -55,10 +55,10 @@
                     />
 
                     <div class="prod-card__overlay">
-                        <!-- Use the JS function instead of a direct URL redirect for better UX -->
-                        <button class="prod-card__overlay-btn" onclick="showDetails('<%= p.getProductId() %>')">
-                            Details
-                        </button>
+                        <a href="${pageContext.request.contextPath}/ProductDetailServlet?id=<%= p.getProductId() %>"
+                           class="prod-card__overlay-btn">
+                            View Details
+                        </a>
                     </div>
                 </div>
 
@@ -79,54 +79,7 @@
     <% } %>
 </div>
 
-<!-- Modal Structure (Remains the same as your draft) -->
-<div id="productModal" style="display:none; position:fixed; inset:0; z-index:2000; background:rgba(26,10,15,0.7); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:20px;">
-    <div style="background:#fff; border-radius:24px; max-width:760px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 30px 80px rgba(0,0,0,0.4);">
-        <div id="modalContent" style="padding:40px;"></div>
-    </div>
-</div>
-
 <jsp:include page="/components/footer.jsp" />
 
-<script>
-var productData = {};
-
-<%
-if (productList != null) {
-    for (ProductModel p : productList) {
-        String features = p.getFeatures() != null ? p.getFeatures().replace("'", "\\'").replace("\n", " ") : "";
-%>
-productData['<%= p.getProductId() %>'] = {
-    id:       '<%= p.getProductId() %>',
-    name:     '<%= p.getProductName().replace("'", "\\'") %>',
-    category: '<%= p.getCategory() %>',
-    price:    '<%= String.format("%.0f", p.getPrice()) %>',
-    features: '<%= features %>',
-    // FIXED JS IMAGE PATH
-    image:    '${pageContext.request.contextPath}/images/<%= p.getImage() %>'
-};
-<% } } %>
-
-function showDetails(productId) {
-    var p = productData[productId];
-    if (!p) return;
-
-    var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">'
-        + '<div><img src="' + p.image + '" style="width:100%;border-radius:16px;" onerror="this.src=\'${pageContext.request.contextPath}/images/placeholder.jpg\'"></div>'
-        + '<div>'
-        + '<h2>' + p.name + '</h2>'
-        + '<p style="font-size:24px; color:#8b2442;">Rs ' + parseInt(p.price).toLocaleString() + '</p>'
-        + '<p>' + p.features + '</p>'
-        + '<button onclick="closeModal()" style="padding:10px 20px; cursor:pointer;">Close</button>'
-        + '</div></div>';
-
-    document.getElementById('modalContent').innerHTML = html;
-    document.getElementById('productModal').style.display = 'flex';
-}
-
-function closeModal() {
-    document.getElementById('productModal').style.display = 'none';
-}
-</script>
 </body>
 </html>
