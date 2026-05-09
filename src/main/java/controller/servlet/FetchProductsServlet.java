@@ -1,107 +1,51 @@
 package controller.servlet;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
+import dao.CartDAO;
+import dao.ProductDao;
+import model.ProductModel;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import controller.DatabaseController;
-import model.ProductModel;
-import util.StringUtils;
-
-/**
- * FetchProductsServlet
- * Handles GET /FetchProductsServlet
- * Fetches all products (optionally filtered by category or search)
- * and forwards to products.jsp. Also fetches cart count for the navbar badge.
- */
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class FetchProductsServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private DatabaseController db = new DatabaseController();
+
+    private final ProductDao productDAO = new ProductDao();
+    private final CartDAO    cartDAO    = new CartDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Redirect to login if not logged in
+        // 1. Must be logged in
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute(StringUtils.SESSION_USER_ID) == null) {
-            response.sendRedirect(request.getContextPath() + StringUtils.LOGIN_PAGE);
+        if (session == null || session.getAttribute("userID") == null) {
+            response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
             return;
         }
 
-        String userId   = (String) session.getAttribute(StringUtils.SESSION_USER_ID);
-        String category = request.getParameter("category"); // optional filter
-        String search   = request.getParameter("search");   // optional search
+        String userId   = (String) session.getAttribute("userID");
+        String category = request.getParameter("category");
+        String search   = request.getParameter("search");
 
-        List<ProductModel> products = new ArrayList<>();
+        // 2. Fetch products via DAO (filtered by category or search if provided)
+        ArrayList<ProductModel> products = productDAO.getFilteredProducts(category, search);
 
-        try (Connection conn = db.getConnection()) {
+        // 3. Fetch cart count for navbar badge via DAO
+        int cartCount = cartDAO.getCartCount(userId);
 
-            String sql;
-            PreparedStatement ps;
-
-            if (search != null && !search.trim().isEmpty()) {
-                sql = "SELECT * FROM products WHERE product_name LIKE ? ORDER BY product_name";
-                ps  = conn.prepareStatement(sql);
-                ps.setString(1, "%" + search.trim() + "%");
-
-            } else if (category != null && !category.trim().isEmpty()) {
-                sql = "SELECT * FROM products WHERE LOWER(category) LIKE ? ORDER BY product_name";
-                ps  = conn.prepareStatement(sql);
-                ps.setString(1, "%" + category.trim().toLowerCase() + "%");
-
-            } else {
-                sql = "SELECT * FROM products ORDER BY product_name";
-                ps  = conn.prepareStatement(sql);
-            }
-
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                ProductModel p = new ProductModel();
-                p.setProductId(rs.getString("product_id"));
-                p.setProductName(rs.getString("product_name"));
-                p.setCategory(rs.getString("category"));
-                p.setShade(rs.getString("shade"));
-                p.setBrand(rs.getString("brand"));
-                p.setFeatures(rs.getString("features"));
-                p.setNetWeight(rs.getString("net_weight"));
-                p.setShelfLife(rs.getString("shelf_life"));
-                p.setPrice(rs.getDouble("price"));
-                p.setImage(rs.getString("image"));
-                products.add(p);
-            }
-            rs.close();
-            ps.close();
-
-            // ── Fetch cart item count for navbar badge ────────────
-            int cartCount = 0;
-            try (PreparedStatement cs = conn.prepareStatement(StringUtils.GET_CART_COUNT)) {
-                cs.setString(1, userId);
-                try (ResultSet cr = cs.executeQuery()) {
-                    if (cr.next()) cartCount = cr.getInt("total");
-                }
-            }
-            request.setAttribute("cartCount", cartCount);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        request.setAttribute("products", products);
+        // 4. Forward to products page
+        request.setAttribute("products",         products);
+        request.setAttribute("cartCount",         cartCount);
         request.setAttribute("selectedCategory", category != null ? category : "");
-        request.setAttribute("searchQuery", search != null ? search : "");
+        request.setAttribute("searchQuery",      search   != null ? search   : "");
         request.getRequestDispatcher("/pages/products.jsp").forward(request, response);
     }
 

@@ -1,29 +1,26 @@
 package controller.servlet;
 
-import java.io.IOException;
+import dao.Userdao;
+import model.UsersModel;
+import util.PasswordUtil;
+import util.ValidationUtil;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import controller.DatabaseController;
-import controller.PasswordUtil;
-import model.UsersModel;
-import util.StringUtils;
-
-/**
- * RegisterServlet
- * Handles POST from register.jsp.
- * Validates all fields, checks duplicates,
- * encrypts password, then saves the new user.
- */
+import java.io.IOException;
 
 public class RegisterServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private DatabaseController db = new DatabaseController();
+
+    private final Userdao userDAO = new Userdao();
+
+    private static final String CHECK_DUP_USERID = "SELECT user_id FROM users WHERE user_id = ?";
+    private static final String CHECK_DUP_EMAIL  = "SELECT user_id FROM users WHERE email = ?";
+    private static final String CHECK_DUP_PHONE  = "SELECT user_id FROM users WHERE phone_number = ?";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -39,7 +36,7 @@ public class RegisterServlet extends HttpServlet {
         String role        = request.getParameter("role");
         String address     = request.getParameter("address");
 
-        // ── 2. Null safety - trim all fields ──────────────────────
+        // ── 2. Null safety ─────────────────────────────────────────
         userId      = (userId      != null) ? userId.trim()      : "";
         fullName    = (fullName    != null) ? fullName.trim()    : "";
         email       = (email       != null) ? email.trim()       : "";
@@ -48,119 +45,93 @@ public class RegisterServlet extends HttpServlet {
         confirmPass = (confirmPass != null) ? confirmPass        : "";
         role        = (role        != null) ? role.trim()        : "user";
 
-        // ── 3. Check no field is empty ─────────────────────────────
-        if (userId.isEmpty() || fullName.isEmpty() || email.isEmpty()
-                || phoneNumber.isEmpty() || password.isEmpty() || confirmPass.isEmpty()) {
-            request.setAttribute("errorMessage", "All fields are required. Please fill in every field.");
-            request.getRequestDispatcher(StringUtils.REGISTER_PAGE).forward(request, response);
+        // ── 3. Empty field check ───────────────────────────────────
+        if (ValidationUtil.isNullOrEmpty(userId)   || ValidationUtil.isNullOrEmpty(fullName) ||
+            ValidationUtil.isNullOrEmpty(email)    || ValidationUtil.isNullOrEmpty(phoneNumber) ||
+            ValidationUtil.isNullOrEmpty(password) || ValidationUtil.isNullOrEmpty(confirmPass)) {
+            sendError(request, response, "All fields are required. Please fill in every field.");
             return;
         }
 
-        // ── 4. Full name must have letters and spaces only ─────────
-        if (!fullName.matches("[a-zA-Z ]+")) {
-            request.setAttribute("errorMessage",
-                "Full name must contain letters only. Numbers and symbols are not allowed.");
-            request.getRequestDispatcher(StringUtils.REGISTER_PAGE).forward(request, response);
+        // ── 4. Full name must contain only letters and spaces ──────
+        if (!ValidationUtil.isValidFullName(fullName)) {
+            sendError(request, response, "Full name must contain letters only. Numbers and symbols are not allowed.");
             return;
         }
 
         // ── 5. User ID must be at least 6 characters ──────────────
-        if (userId.length() < 6) {
-            request.setAttribute("errorMessage",
-                "User ID must be at least 6 characters long.");
-            request.getRequestDispatcher(StringUtils.REGISTER_PAGE).forward(request, response);
+        if (!ValidationUtil.isValidUserId(userId)) {
+            sendError(request, response, "User ID must be at least 6 characters long.");
             return;
         }
 
-        // ── 6. Email format validation ─────────────────────────────
-        if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
-            request.setAttribute("errorMessage",
-                "Please enter a valid email address. Example: name@email.com");
-            request.getRequestDispatcher(StringUtils.REGISTER_PAGE).forward(request, response);
+        // ── 6. Email format ────────────────────────────────────────
+        if (!ValidationUtil.isValidEmail(email)) {
+            sendError(request, response, "Please enter a valid email address. Example: name@email.com");
             return;
         }
 
         // ── 7. Phone number must be exactly 10 digits ──────────────
-        if (!phoneNumber.matches("\\d{10}")) {
-            request.setAttribute("errorMessage",
-                "Phone number must be exactly 10 digits. No spaces, dashes or symbols.");
-            request.getRequestDispatcher(StringUtils.REGISTER_PAGE).forward(request, response);
+        if (!ValidationUtil.isValidPhoneNumber(phoneNumber)) {
+            sendError(request, response, "Phone number must be exactly 10 digits. No spaces, dashes or symbols.");
             return;
         }
 
-        // ── 8. Password strength check ─────────────────────────────
-        // Must be at least 8 characters and contain:
-        // uppercase letter, lowercase letter, digit, special character
-        if (!password.matches(
-                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$!%*?&])[A-Za-z\\d@#$!%*?&]{8,}$")) {
-            request.setAttribute("errorMessage",
-                "Password must be at least 8 characters and must include: "
-                + "one uppercase letter, one lowercase letter, one number, "
-                + "and one special character (@#$!%*?&).");
-            request.getRequestDispatcher(StringUtils.REGISTER_PAGE).forward(request, response);
+        // ── 8. Password strength ───────────────────────────────────
+        if (!ValidationUtil.isValidPassword(password)) {
+            sendError(request, response,
+                "Password must be at least 8 characters and must include: " +
+                "one uppercase letter, one lowercase letter, one number, " +
+                "and one special character (@#$!%*?&).");
             return;
         }
 
         // ── 9. Passwords must match ────────────────────────────────
-        if (!password.equals(confirmPass)) {
-            request.setAttribute("errorMessage", StringUtils.ERR_PASSWORD_MISMATCH);
-            request.getRequestDispatcher(StringUtils.REGISTER_PAGE).forward(request, response);
+        if (!ValidationUtil.doPasswordsMatch(password, confirmPass)) {
+            sendError(request, response, "Passwords do not match. Please try again.");
             return;
         }
 
-        // ── 10. Check duplicate User ID ────────────────────────────
-        if (db.isDuplicate(userId, StringUtils.CHECK_DUP_USERID)) {
-            request.setAttribute("errorMessage", StringUtils.ERR_DUP_USERID);
-            request.getRequestDispatcher(StringUtils.REGISTER_PAGE).forward(request, response);
+        // ── 10. Duplicate checks via DAO ───────────────────────────
+        if (userDAO.isDuplicate(userId, CHECK_DUP_USERID)) {
+            sendError(request, response, "That User ID is already taken. Please choose another.");
+            return;
+        }
+        if (userDAO.isDuplicate(email, CHECK_DUP_EMAIL)) {
+            sendError(request, response, "An account with that email already exists.");
+            return;
+        }
+        if (userDAO.isDuplicate(phoneNumber, CHECK_DUP_PHONE)) {
+            sendError(request, response, "An account with that phone number already exists.");
             return;
         }
 
-        // ── 11. Check duplicate email ──────────────────────────────
-        if (db.isDuplicate(email, StringUtils.CHECK_DUP_EMAIL)) {
-            request.setAttribute("errorMessage", StringUtils.ERR_DUP_EMAIL);
-            request.getRequestDispatcher(StringUtils.REGISTER_PAGE).forward(request, response);
-            return;
-        }
+        // ── 11. Hash password before saving ───────────────────────
+        String hashedPassword = PasswordUtil.getHashPassword(password);
 
-        // ── 12. Check duplicate phone number ───────────────────────
-        if (db.isDuplicate(phoneNumber, StringUtils.CHECK_DUP_PHONE)) {
-            request.setAttribute("errorMessage", StringUtils.ERR_DUP_PHONE);
-            request.getRequestDispatcher(StringUtils.REGISTER_PAGE).forward(request, response);
-            return;
-        }
-
-        // ── 13. Encrypt the password before saving to database ─────
-        String encryptedPassword = PasswordUtil.encrypt(password, userId);
-        if (encryptedPassword == null) {
-            request.setAttribute("errorMessage", StringUtils.ERR_SERVER);
-            request.getRequestDispatcher(StringUtils.REGISTER_PAGE).forward(request, response);
-            return;
-        }
-
-        // ── 14. Build UsersModel and save to database ──────────────
+        // ── 12. Build model and save via DAO ───────────────────────
         UsersModel newUser = new UsersModel(
-                userId, fullName, email, encryptedPassword, phoneNumber, role, address
+            userId, fullName, email, hashedPassword, phoneNumber, role, address
         );
 
-        int result = db.registerUser(newUser);
+        int result = userDAO.insertUser(newUser);
 
         if (result == 1) {
-            // Registration successful - go to login page with success message
-            response.sendRedirect(
-                request.getContextPath() + StringUtils.LOGIN_PAGE + "?registered=true"
-            );
+            response.sendRedirect(request.getContextPath() + "/pages/login.jsp?registered=true");
         } else {
-            // Something went wrong with the insert
-            request.setAttribute("errorMessage",
-                "Registration failed. Please try again.");
-            request.getRequestDispatcher(StringUtils.REGISTER_PAGE).forward(request, response);
+            sendError(request, response, "Registration failed. Please try again.");
         }
     }
 
-    // If someone goes to /RegisterServlet directly, send to register page
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect(request.getContextPath() + StringUtils.REGISTER_PAGE);
+        response.sendRedirect(request.getContextPath() + "/pages/register.jsp");
+    }
+
+    private void sendError(HttpServletRequest request, HttpServletResponse response, String message)
+            throws ServletException, IOException {
+        request.setAttribute("errorMessage", message);
+        request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
     }
 }

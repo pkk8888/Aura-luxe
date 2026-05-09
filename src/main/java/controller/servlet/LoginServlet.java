@@ -1,6 +1,8 @@
 package controller.servlet;
 
-import java.io.IOException;
+import dao.Userdao;
+import model.UsersModel;
+import util.ValidationUtil;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -8,88 +10,75 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import controller.DatabaseController;
-import model.UsersModel;
-import util.StringUtils;
+import java.io.IOException;
 
-/**
- * LoginServlet
- * Handles the POST request from login.jsp.
- * Reads the userID and password, validates them against the DB,
- * then either starts a session and redirects, or shows an error.
- */
 public class LoginServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private DatabaseController db = new DatabaseController();
+    private final Userdao userDAO = new Userdao();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         // 1. Read form fields
-        String userId   = request.getParameter("userID").trim();
+        String userId   = request.getParameter("userID");
         String password = request.getParameter("password");
 
-        // 2. Basic empty field check
-        if (userId.isEmpty() || password.isEmpty()) {
+        // 2. Null safety
+        userId   = (userId   != null) ? userId.trim() : "";
+        password = (password != null) ? password      : "";
+
+        // 3. Empty field check
+        if (ValidationUtil.isNullOrEmpty(userId) || ValidationUtil.isNullOrEmpty(password)) {
             request.setAttribute("errorMessage", "Please fill in both User ID and Password.");
-            request.getRequestDispatcher(StringUtils.LOGIN_PAGE).forward(request, response);
+            request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
             return;
         }
 
-        // 3. Validate credentials
-        int result = db.validateLogin(userId, password);
+        // 4. Validate credentials via DAO
+        int result = userDAO.validateLogin(userId, password);
 
         if (result == 1) {
-            // ── Admin login ──────────────────────────────────────
+            // Admin login
             HttpSession session = request.getSession();
-            session.setAttribute(StringUtils.SESSION_USER_ID,  userId);
-            session.setAttribute(StringUtils.SESSION_IS_ADMIN, true);
+            session.setAttribute("userID",  userId);
+            session.setAttribute("isAdmin", true);
 
-            // Fetch full name for admin too
-            UsersModel admin = db.getUserById(userId);
-            if (admin != null && admin.getFullName() != null) {
-                session.setAttribute("fullName", admin.getFullName());
-            }
+            UsersModel admin = userDAO.getUserById(userId);
+            if (admin != null) session.setAttribute("fullName", admin.getFullName());
 
-            response.sendRedirect(request.getContextPath() + StringUtils.ADMIN_PAGE);
+            response.sendRedirect(request.getContextPath() + "/pages/order_list.jsp");
 
         } else if (result == 2) {
-            // ── Normal user login ────────────────────────────────
+            // Normal user login
             HttpSession session = request.getSession();
-            session.setAttribute(StringUtils.SESSION_USER_ID,  userId);
-            session.setAttribute(StringUtils.SESSION_IS_ADMIN, false);
+            session.setAttribute("userID",  userId);
+            session.setAttribute("isAdmin", false);
 
-            // ✅ Fetch and store full name so navbar shows it
-            UsersModel user = db.getUserById(userId);
-            if (user != null && user.getFullName() != null) {
-                session.setAttribute("fullName", user.getFullName());
-            }
+            UsersModel user = userDAO.getUserById(userId);
+            if (user != null) session.setAttribute("fullName", user.getFullName());
 
-            response.sendRedirect(request.getContextPath() + StringUtils.HOME_PAGE);
+            response.sendRedirect(request.getContextPath() + "/pages/home.jsp");
 
         } else if (result == 0) {
-            // ── User ID does not exist ───────────────────────────
-            request.setAttribute("errorMessage", StringUtils.ERR_USER_NOT_FOUND);
-            request.getRequestDispatcher(StringUtils.LOGIN_PAGE).forward(request, response);
+            request.setAttribute("errorMessage", "No account found with that User ID. Please register first.");
+            request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
 
         } else if (result == 3) {
-            // ── Wrong password ───────────────────────────────────
-            request.setAttribute("errorMessage", StringUtils.ERR_INVALID_LOGIN);
-            request.getRequestDispatcher(StringUtils.LOGIN_PAGE).forward(request, response);
+            request.setAttribute("errorMessage", "Incorrect User ID or Password. Please try again.");
+            request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
 
         } else {
-            // ── Server or DB error ───────────────────────────────
-            request.setAttribute("errorMessage", StringUtils.ERR_SERVER);
-            request.getRequestDispatcher(StringUtils.LOGIN_PAGE).forward(request, response);
+            request.setAttribute("errorMessage", "A server error occurred. Please try again later.");
+            request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect(request.getContextPath() + StringUtils.LOGIN_PAGE);
+        response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
     }
 }

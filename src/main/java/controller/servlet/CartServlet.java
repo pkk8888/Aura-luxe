@@ -1,7 +1,7 @@
 package controller.servlet;
 
-import controller.DatabaseController;
-import util.StringUtils;
+import dao.CartDAO;
+import model.CartsModel;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -10,118 +10,81 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * CartServlet
- * GET  /CartServlet          — shows the cart page (cart.jsp)
- * GET  /CartServlet?remove=X — removes item, then shows cart
- * GET  /CartServlet?updateId=X&qty=N — updates quantity, then shows cart
- */
 public class CartServlet extends HttpServlet {
 
-    private final DatabaseController db = new DatabaseController();
+    private static final long serialVersionUID = 1L;
+
+    private final CartDAO cartDAO = new CartDAO();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = req.getSession(false);
-
-        if (session == null || session.getAttribute(StringUtils.SESSION_USER_ID) == null) {
-            resp.sendRedirect(req.getContextPath() + StringUtils.LOGIN_PAGE + "?error=login_required");
+        // 1. Must be logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("userID") == null) {
+            response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
             return;
         }
 
-        String userId = (String) session.getAttribute(StringUtils.SESSION_USER_ID);
+        String userId = (String) session.getAttribute("userID");
 
-        // ── Handle remove ──────────────────────────────────────────
-        String removeId = req.getParameter("remove");
+        // 2. Handle remove item
+        String removeId = request.getParameter("remove");
         if (removeId != null && !removeId.isEmpty()) {
-            try (Connection conn = db.getConnection();
-                 PreparedStatement st = conn.prepareStatement(StringUtils.REMOVE_FROM_CART)) {
-                st.setString(1, userId);
-                st.setString(2, removeId);
-                st.executeUpdate();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            cartDAO.removeFromCart(userId, removeId);
         }
 
-        // ── Handle quantity update ─────────────────────────────────
-        String updateId  = req.getParameter("updateId");
-        String updateQty = req.getParameter("qty");
+        // 3. Handle quantity update
+        String updateId  = request.getParameter("updateId");
+        String updateQty = request.getParameter("qty");
         if (updateId != null && updateQty != null) {
             try {
                 int qty = Integer.parseInt(updateQty);
-                if (qty <= 0) {
-                    try (Connection conn = db.getConnection();
-                         PreparedStatement st = conn.prepareStatement(StringUtils.REMOVE_FROM_CART)) {
-                        st.setString(1, userId);
-                        st.setString(2, updateId);
-                        st.executeUpdate();
-                    }
-                } else {
-                    try (Connection conn = db.getConnection();
-                         PreparedStatement st = conn.prepareStatement(
-                                 "UPDATE carts SET quantity = ? WHERE user_id = ? AND product_id = ?")) {
-                        st.setInt(1, qty);
-                        st.setString(2, userId);
-                        st.setString(3, updateId);
-                        st.executeUpdate();
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+                cartDAO.updateQuantity(userId, updateId, qty);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid quantity: " + updateQty);
             }
         }
 
-        // ── Fetch cart items ──────────────────────────────────────
+        // 4. Fetch cart items via DAO
+        ArrayList<CartsModel> items = cartDAO.getCartItems(userId);
+
+        // 5. Convert to List<Map> so cart.jsp works without any changes
         List<Map<String, Object>> cartItems = new ArrayList<>();
         double grandTotal = 0;
-        int cartCount = 0;
 
-        try (Connection conn = db.getConnection();
-             PreparedStatement st = conn.prepareStatement(StringUtils.GET_CART_ITEMS)) {
+        for (CartsModel item : items) {
+            double lineTotal = item.getLineTotal();
+            grandTotal += lineTotal;
 
-            st.setString(1, userId);
-
-            try (ResultSet rs = st.executeQuery()) {
-                while (rs.next()) {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("productId",   rs.getString("product_id"));
-                    item.put("productName", rs.getString("product_name"));
-                    item.put("price",       rs.getDouble("price"));
-                    item.put("image",       rs.getString("image"));
-                    item.put("quantity",    rs.getInt("quantity"));
-
-                    double lineTotal = rs.getDouble("price") * rs.getInt("quantity");
-                    item.put("lineTotal", lineTotal);
-                    grandTotal += lineTotal;
-                    cartCount++;
-
-                    cartItems.add(item);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            Map<String, Object> map = new HashMap<>();
+            map.put("productId",   item.getProductId());
+            map.put("productName", item.getProductName());
+            map.put("price",       item.getPrice());
+            map.put("image",       item.getImage());
+            map.put("quantity",    item.getQuantity());
+            map.put("lineTotal",   lineTotal);
+            cartItems.add(map);
         }
 
-        req.setAttribute("cartItems",  cartItems);
-        req.setAttribute("grandTotal", grandTotal);
-        req.setAttribute("cartCount",  cartCount);   // for navbar badge
-        req.getRequestDispatcher("/pages/cart.jsp").forward(req, resp);
+        int cartCount = cartDAO.getCartCount(userId);
+
+        // 6. Forward to cart page
+        request.setAttribute("cartItems",  cartItems);
+        request.setAttribute("grandTotal", grandTotal);
+        request.setAttribute("cartCount",  cartCount);
+        request.getRequestDispatcher("/pages/cart.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(req, resp);
+        doGet(request, response);
     }
 }

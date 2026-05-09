@@ -1,7 +1,9 @@
 package controller.servlet;
 
-import controller.DatabaseController;
-import util.StringUtils;
+import dao.CartDAO;
+import dao.OrderDAO;
+import model.CartsModel;
+import model.OrdersModel;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -10,205 +12,114 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-/**
- * PlaceOrderServlet
- * POST /PlaceOrderServlet
- * Reads delivery + payment form data from checkout.jsp,
- * saves the order and order_products to the DB,
- * clears the user's cart, then forwards to thankyou.jsp.
- */
 public class PlaceOrderServlet extends HttpServlet {
 
-    private final DatabaseController db = new DatabaseController();
+    private static final long serialVersionUID = 1L;
+
+    private final OrderDAO orderDAO = new OrderDAO();
+    private final CartDAO  cartDAO  = new CartDAO();
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         // ── 1. Session guard ──────────────────────────────────────
-        HttpSession session = req.getSession(false);
-        if (session == null || session.getAttribute(StringUtils.SESSION_USER_ID) == null) {
-            resp.sendRedirect(req.getContextPath() + StringUtils.LOGIN_PAGE);
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("userID") == null) {
+            response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
             return;
         }
 
-        String userId    = (String) session.getAttribute(StringUtils.SESSION_USER_ID);
-        String fullName  = (String) session.getAttribute("fullName");
-        String displayName = (fullName != null && !fullName.isEmpty()) ? fullName : userId;
+        String userId = (String) session.getAttribute("userID");
 
         // ── 2. Read form fields ───────────────────────────────────
-        String name    = req.getParameter("fullName");
-        String phone   = req.getParameter("phone");
-        String city    = req.getParameter("city");
-        String address = req.getParameter("address");
-        String payment = req.getParameter("payment");
+        String name    = request.getParameter("fullName");
+        String phone   = request.getParameter("phone");
+        String city    = request.getParameter("city");
+        String address = request.getParameter("address");
+        String payment = request.getParameter("payment");
 
-        // Basic validation — send back to checkout with error if anything is missing
-        if (name == null || name.trim().isEmpty() ||
-            phone == null || phone.trim().isEmpty() ||
-            city == null || city.trim().isEmpty() ||
-            address == null || address.trim().isEmpty() ||
-            payment == null || payment.trim().isEmpty()) {
-
-            req.setAttribute("errorMsg", "Please fill in all required fields.");
-            // Re-load cart items so checkout page can re-render
-            forwardBackToCheckout(req, resp, userId);
+        // ── 3. Basic validation ───────────────────────────────────
+        if (isAnyEmpty(name, phone, city, address, payment)) {
+            request.setAttribute("errorMsg", "Please fill in all required fields.");
+            forwardBackToCheckout(request, response, userId);
             return;
         }
 
-        // ── 3. Load current cart from DB ──────────────────────────
-        List<Map<String, Object>> cartItems = new ArrayList<>();
-        double grandTotal = 0.0;
+        // ── 4. Load cart from DAO ─────────────────────────────────
+        ArrayList<CartsModel> cartItems = cartDAO.getCartItems(userId);
 
-        try (Connection conn = db.getConnection();
-             PreparedStatement ps = conn.prepareStatement(StringUtils.GET_CART_ITEMS)) {
-
-            ps.setString(1, userId);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Map<String, Object> item = new HashMap<>();
-                double price    = rs.getDouble("price");
-                int    quantity = rs.getInt("quantity");
-
-                item.put("productId",  rs.getString("product_id"));
-                item.put("quantity",   quantity);
-                item.put("lineTotal",  price * quantity);
-                cartItems.add(item);
-                grandTotal += price * quantity;
-            }
-            rs.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            req.setAttribute("errorMsg", StringUtils.ERR_SERVER);
-            forwardBackToCheckout(req, resp, userId);
-            return;
-        }
-
-        // If cart is empty, redirect to shop
         if (cartItems.isEmpty()) {
-            resp.sendRedirect(req.getContextPath() + StringUtils.FETCH_PRODUCTS_SERVLET);
+            response.sendRedirect(request.getContextPath() + "/FetchProductsServlet");
             return;
         }
 
-        // ── 4. Generate a unique Order ID ─────────────────────────
-        String orderId = "AL-" + UUID.randomUUID().toString().replace("-", "").substring(0, 10).toUpperCase();
+        // ── 5. Calculate total and build order items list ─────────
+        double grandTotal = 0;
+        ArrayList<String[]> orderItems = new ArrayList<>();
 
-        // ── 5. Save order + order_products in one transaction ─────
-        try (Connection conn = db.getConnection()) {
+        for (CartsModel item : cartItems) {
+            grandTotal += item.getLineTotal();
+            orderItems.add(new String[]{ item.getProductId(), String.valueOf(item.getQuantity()) });
+        }
 
-            conn.setAutoCommit(false); // begin transaction
+        // ── 6. Build OrdersModel ──────────────────────────────────
+        String orderId = "AL-" + UUID.randomUUID().toString()
+                                     .replace("-", "")
+                                     .substring(0, 10)
+                                     .toUpperCase();
 
-            // Insert into orders table
-            try (PreparedStatement psOrder = conn.prepareStatement(StringUtils.INSERT_ORDER)) {
-                psOrder.setString(1, orderId);
-                psOrder.setString(2, userId);
-                psOrder.setDouble(3, grandTotal);
-                psOrder.setString(4, city);
-                psOrder.setString(5, address);
-                psOrder.setString(6, payment);
-                psOrder.executeUpdate();
-            }
+        OrdersModel order = new OrdersModel(orderId, userId, grandTotal, city, address, payment);
 
-            // Insert each cart item into order_products
-            try (PreparedStatement psItem = conn.prepareStatement(StringUtils.INSERT_ORDER_PRODUCT)) {
-                for (Map<String, Object> item : cartItems) {
-                    psItem.setString(1, orderId);
-                    psItem.setString(2, (String) item.get("productId"));
-                    psItem.setInt(3, (Integer) item.get("quantity"));
-                    psItem.addBatch();
-                }
-                psItem.executeBatch();
-            }
+        // ── 7. Place order via DAO (transaction inside) ───────────
+        String savedOrderId = orderDAO.placeOrder(order, orderItems);
 
-            conn.commit(); // commit transaction
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            req.setAttribute("errorMsg", "Could not place your order. Please try again.");
-            forwardBackToCheckout(req, resp, userId);
+        if (savedOrderId == null) {
+            request.setAttribute("errorMsg", "Could not place your order. Please try again.");
+            forwardBackToCheckout(request, response, userId);
             return;
         }
 
-        // ── 6. Clear the cart ─────────────────────────────────────
-        try (Connection conn = db.getConnection();
-             PreparedStatement ps = conn.prepareStatement(StringUtils.CLEAR_CART)) {
-            ps.setString(1, userId);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace(); // non-fatal — order is already placed
-        }
+        // ── 8. Clear the cart ─────────────────────────────────────
+        cartDAO.clearCart(userId);
 
-        // ── 7. Set attributes for thankyou.jsp ───────────────────
-        req.setAttribute("orderId",         orderId);
-        req.setAttribute("paymentMethod",   payment);
-        req.setAttribute("deliveryAddress", address);
-        req.setAttribute("orderTotal",      grandTotal);
-        req.setAttribute("itemCount",       cartItems.size());
-        session.setAttribute("city",        city); // used by thankyou.jsp
+        // ── 9. Forward to thank you page ──────────────────────────
+        request.setAttribute("orderId",         savedOrderId);
+        request.setAttribute("paymentMethod",   payment);
+        request.setAttribute("deliveryAddress", address);
+        request.setAttribute("orderTotal",      grandTotal);
+        request.setAttribute("itemCount",       cartItems.size());
+        session.setAttribute("city",            city);
 
-        // ── 8. Forward to thank you page ──────────────────────────
-        req.getRequestDispatcher("/pages/thankyou.jsp").forward(req, resp);
+        request.getRequestDispatcher("/pages/thankyou.jsp").forward(request, response);
     }
 
-    /**
-     * Helper: re-loads cart items and forwards back to checkout.jsp with an error.
-     */
-    private void forwardBackToCheckout(HttpServletRequest req,
-                                       HttpServletResponse resp,
+    private void forwardBackToCheckout(HttpServletRequest request,
+                                       HttpServletResponse response,
                                        String userId)
             throws ServletException, IOException {
 
-        List<Map<String, Object>> cartItems = new ArrayList<>();
-        double grandTotal = 0.0;
+        ArrayList<CartsModel> cartItems = cartDAO.getCartItems(userId);
+        double grandTotal = 0;
+        for (CartsModel item : cartItems) grandTotal += item.getLineTotal();
 
-        try (Connection conn = db.getConnection();
-             PreparedStatement ps = conn.prepareStatement(StringUtils.GET_CART_ITEMS)) {
+        request.setAttribute("prefName",    request.getParameter("fullName"));
+        request.setAttribute("prefPhone",   request.getParameter("phone"));
+        request.setAttribute("prefCity",    request.getParameter("city"));
+        request.setAttribute("prefAddr",    request.getParameter("address"));
+        request.setAttribute("prefPayment", request.getParameter("payment"));
+        request.setAttribute("cartItems",   cartItems);
+        request.setAttribute("grandTotal",  grandTotal);
+        request.getRequestDispatcher("/pages/checkout.jsp").forward(request, response);
+    }
 
-            ps.setString(1, userId);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Map<String, Object> item = new HashMap<>();
-                double price    = rs.getDouble("price");
-                int    quantity = rs.getInt("quantity");
-                double lineTotal = price * quantity;
-
-                item.put("productId",   rs.getString("product_id"));
-                item.put("productName", rs.getString("product_name"));
-                item.put("price",       price);
-                item.put("image",       rs.getString("image"));
-                item.put("quantity",    quantity);
-                item.put("lineTotal",   lineTotal);
-
-                cartItems.add(item);
-                grandTotal += lineTotal;
-            }
-            rs.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+    private boolean isAnyEmpty(String... values) {
+        for (String v : values) {
+            if (v == null || v.trim().isEmpty()) return true;
         }
-
-        // Preserve entered values so user doesn't retype everything
-        req.setAttribute("prefName",    req.getParameter("fullName"));
-        req.setAttribute("prefPhone",   req.getParameter("phone"));
-        req.setAttribute("prefCity",    req.getParameter("city"));
-        req.setAttribute("prefAddr",    req.getParameter("address"));
-        req.setAttribute("prefPayment", req.getParameter("payment"));
-
-        req.setAttribute("cartItems",  cartItems);
-        req.setAttribute("grandTotal", grandTotal);
-        req.getRequestDispatcher("/pages/checkout.jsp").forward(req, resp);
+        return false;
     }
 }

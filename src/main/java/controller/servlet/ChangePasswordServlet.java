@@ -1,9 +1,9 @@
 package controller.servlet;
 
-import controller.DatabaseController;
-import controller.PasswordUtil;
+import dao.Userdao;
 import model.UsersModel;
-import util.StringUtils;
+import util.PasswordUtil;
+import util.ValidationUtil;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -12,96 +12,83 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 
-/**
- * ChangePasswordServlet
- * POST /ChangePasswordServlet
- * Verifies current password, then updates to the new one (encrypted).
- */
 public class ChangePasswordServlet extends HttpServlet {
 
-    private final DatabaseController db = new DatabaseController();
+    private static final long serialVersionUID = 1L;
+
+    private final Userdao userDAO = new Userdao();
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = req.getSession(false);
-        if (session == null || session.getAttribute(StringUtils.SESSION_USER_ID) == null) {
-            resp.sendRedirect(req.getContextPath() + StringUtils.LOGIN_PAGE);
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("userID") == null) {
+            response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
             return;
         }
 
-        String userId          = (String) session.getAttribute(StringUtils.SESSION_USER_ID);
-        String currentPassword = req.getParameter("currentPassword");
-        String newPassword     = req.getParameter("newPassword");
-        String confirmPassword = req.getParameter("confirmPassword");
+        String userId          = (String) session.getAttribute("userID");
+        String currentPassword = request.getParameter("currentPassword");
+        String newPassword     = request.getParameter("newPassword");
+        String confirmPassword = request.getParameter("confirmPassword");
 
         // ── Validate inputs ───────────────────────────────────────
-        if (currentPassword == null || currentPassword.isEmpty() ||
-            newPassword     == null || newPassword.isEmpty() ||
-            confirmPassword == null || confirmPassword.isEmpty()) {
-            req.setAttribute("errorMsg", "All fields are required.");
-            req.getRequestDispatcher("/pages/change-password.jsp").forward(req, resp);
+        if (ValidationUtil.isNullOrEmpty(currentPassword) ||
+            ValidationUtil.isNullOrEmpty(newPassword)     ||
+            ValidationUtil.isNullOrEmpty(confirmPassword)) {
+            request.setAttribute("errorMsg", "All fields are required.");
+            request.getRequestDispatcher("/pages/change-password.jsp").forward(request, response);
             return;
         }
 
-        if (!newPassword.equals(confirmPassword)) {
-            req.setAttribute("errorMsg", "New passwords do not match.");
-            req.getRequestDispatcher("/pages/change-password.jsp").forward(req, resp);
+        if (!ValidationUtil.doPasswordsMatch(newPassword, confirmPassword)) {
+            request.setAttribute("errorMsg", "New passwords do not match.");
+            request.getRequestDispatcher("/pages/change-password.jsp").forward(request, response);
             return;
         }
 
-        if (newPassword.length() < 6) {
-            req.setAttribute("errorMsg", "New password must be at least 6 characters.");
-            req.getRequestDispatcher("/pages/change-password.jsp").forward(req, resp);
+        if (!ValidationUtil.isValidPassword(newPassword)) {
+            request.setAttribute("errorMsg",
+                "New password must be at least 8 characters and include uppercase, " +
+                "lowercase, a number, and a special character (@#$!%*?&).");
+            request.getRequestDispatcher("/pages/change-password.jsp").forward(request, response);
             return;
         }
 
-        // ── Verify current password ───────────────────────────────
-        int loginResult = db.validateLogin(userId, currentPassword);
+        // ── Verify current password via DAO ───────────────────────
+        int loginResult = userDAO.validateLogin(userId, currentPassword);
         if (loginResult == 3 || loginResult == 0) {
-            req.setAttribute("errorMsg", "Current password is incorrect.");
-            req.getRequestDispatcher("/pages/change-password.jsp").forward(req, resp);
+            request.setAttribute("errorMsg", "Current password is incorrect.");
+            request.getRequestDispatcher("/pages/change-password.jsp").forward(request, response);
             return;
         }
         if (loginResult == -1) {
-            req.setAttribute("errorMsg", StringUtils.ERR_SERVER);
-            req.getRequestDispatcher("/pages/change-password.jsp").forward(req, resp);
+            request.setAttribute("errorMsg", "A server error occurred. Please try again.");
+            request.getRequestDispatcher("/pages/change-password.jsp").forward(request, response);
             return;
         }
 
-        // ── Encrypt new password and save ─────────────────────────
-        String encryptedNew = PasswordUtil.encrypt(newPassword, userId);
-        if (encryptedNew == null) {
-            req.setAttribute("errorMsg", "Could not encrypt the new password. Please try again.");
-            req.getRequestDispatcher("/pages/change-password.jsp").forward(req, resp);
-            return;
-        }
+        // ── Hash new password and save via DAO ────────────────────
+        String hashedNew = PasswordUtil.getHashPassword(newPassword);
+        boolean saved    = userDAO.updatePassword(userId, hashedNew);
 
-        try (Connection conn = db.getConnection();
-             PreparedStatement ps = conn.prepareStatement(StringUtils.UPDATE_USER_PASSWORD)) {
-            ps.setString(1, encryptedNew);
-            ps.setString(2, userId);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-            req.setAttribute("errorMsg", StringUtils.ERR_SERVER);
-            req.getRequestDispatcher("/pages/change-password.jsp").forward(req, resp);
+        if (!saved) {
+            request.setAttribute("errorMsg", "Could not update password. Please try again.");
+            request.getRequestDispatcher("/pages/change-password.jsp").forward(request, response);
             return;
         }
 
         // ── Success: forward to profile with message ──────────────
-        UsersModel user = db.getUserById(userId);
+        UsersModel user = userDAO.getUserById(userId);
         if (user != null) {
-            req.setAttribute("fullName", user.getFullName());
-            req.setAttribute("email",    user.getEmail());
-            req.setAttribute("phone",    user.getPhoneNumber());
-            req.setAttribute("address",  user.getAddress());
+            request.setAttribute("fullName", user.getFullName());
+            request.setAttribute("email",    user.getEmail());
+            request.setAttribute("phone",    user.getPhoneNumber());
+            request.setAttribute("address",  user.getAddress());
         }
-        req.setAttribute("successMsg", "Password changed successfully!");
-        req.getRequestDispatcher("/pages/profile.jsp").forward(req, resp);
+        request.setAttribute("successMsg", "Password changed successfully!");
+        request.getRequestDispatcher("/pages/profile.jsp").forward(request, response);
     }
 }

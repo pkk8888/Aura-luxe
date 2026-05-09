@@ -1,8 +1,8 @@
 package controller.servlet;
 
-import controller.DatabaseController;
+import dao.Userdao;
 import model.UsersModel;
-import util.StringUtils;
+import util.ValidationUtil;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -11,98 +11,100 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 
-/**
- * EditProfileServlet
- * GET  /EditProfileServlet — loads user data and forwards to edit-profile.jsp
- * POST /EditProfileServlet — saves updated fullName + address, redirects to profile
- */
 public class EditProfileServlet extends HttpServlet {
 
-    private final DatabaseController db = new DatabaseController();
+    private static final long serialVersionUID = 1L;
+
+    private final Userdao userDAO = new Userdao();
 
     // ── GET: load current data into the edit form ─────────────────
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = req.getSession(false);
-        if (session == null || session.getAttribute(StringUtils.SESSION_USER_ID) == null) {
-            resp.sendRedirect(req.getContextPath() + StringUtils.LOGIN_PAGE);
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("userID") == null) {
+            response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
             return;
         }
 
-        String userId = (String) session.getAttribute(StringUtils.SESSION_USER_ID);
-        UsersModel user = db.getUserById(userId);
+        String userId = (String) session.getAttribute("userID");
+        UsersModel user = userDAO.getUserById(userId);
 
         if (user != null) {
-            req.setAttribute("fullName", user.getFullName());
-            req.setAttribute("email",    user.getEmail());
-            req.setAttribute("phone",    user.getPhoneNumber());
-            req.setAttribute("address",  user.getAddress());
+            request.setAttribute("fullName", user.getFullName());
+            request.setAttribute("email",    user.getEmail());
+            request.setAttribute("phone",    user.getPhoneNumber());
+            request.setAttribute("address",  user.getAddress());
         }
 
-        req.getRequestDispatcher("/pages/edit-profile.jsp").forward(req, resp);
+        request.getRequestDispatcher("/pages/edit-profile.jsp").forward(request, response);
     }
 
-    // ── POST: save changes ────────────────────────────────────────
+    // ── POST: save changes via DAO ────────────────────────────────
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = req.getSession(false);
-        if (session == null || session.getAttribute(StringUtils.SESSION_USER_ID) == null) {
-            resp.sendRedirect(req.getContextPath() + StringUtils.LOGIN_PAGE);
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("userID") == null) {
+            response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
             return;
         }
 
-        String userId  = (String) session.getAttribute(StringUtils.SESSION_USER_ID);
-        String fullName = req.getParameter("fullName");
-        String address  = req.getParameter("address");
+        String userId  = (String) session.getAttribute("userID");
+        String fullName = request.getParameter("fullName");
+        String address  = request.getParameter("address");
 
-        if (fullName == null || fullName.trim().isEmpty()) {
-            // Reload form with error
-            UsersModel user = db.getUserById(userId);
+        // Validate full name
+        if (ValidationUtil.isNullOrEmpty(fullName)) {
+            UsersModel user = userDAO.getUserById(userId);
             if (user != null) {
-                req.setAttribute("fullName", user.getFullName());
-                req.setAttribute("email",    user.getEmail());
-                req.setAttribute("phone",    user.getPhoneNumber());
-                req.setAttribute("address",  user.getAddress());
+                request.setAttribute("fullName", user.getFullName());
+                request.setAttribute("email",    user.getEmail());
+                request.setAttribute("phone",    user.getPhoneNumber());
+                request.setAttribute("address",  user.getAddress());
             }
-            req.setAttribute("errorMsg", "Full name cannot be empty.");
-            req.getRequestDispatcher("/pages/edit-profile.jsp").forward(req, resp);
+            request.setAttribute("errorMsg", "Full name cannot be empty.");
+            request.getRequestDispatcher("/pages/edit-profile.jsp").forward(request, response);
             return;
         }
 
-        // Update in DB
-        try (Connection conn = db.getConnection();
-             PreparedStatement ps = conn.prepareStatement(StringUtils.UPDATE_USER_PROFILE)) {
-            ps.setString(1, fullName.trim());
-            ps.setString(2, address != null ? address.trim() : "");
-            ps.setString(3, userId);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-            req.setAttribute("errorMsg", StringUtils.ERR_SERVER);
-            req.getRequestDispatcher("/pages/edit-profile.jsp").forward(req, resp);
+        if (!ValidationUtil.isValidFullName(fullName)) {
+            UsersModel user = userDAO.getUserById(userId);
+            if (user != null) {
+                request.setAttribute("fullName", user.getFullName());
+                request.setAttribute("email",    user.getEmail());
+                request.setAttribute("phone",    user.getPhoneNumber());
+                request.setAttribute("address",  user.getAddress());
+            }
+            request.setAttribute("errorMsg", "Full name must contain letters only.");
+            request.getRequestDispatcher("/pages/edit-profile.jsp").forward(request, response);
+            return;
+        }
+
+        // Update via DAO
+        boolean updated = userDAO.updateProfile(userId, fullName.trim(), address != null ? address.trim() : "");
+
+        if (!updated) {
+            request.setAttribute("errorMsg", "Could not update profile. Please try again.");
+            request.getRequestDispatcher("/pages/edit-profile.jsp").forward(request, response);
             return;
         }
 
         // Update session so navbar shows new name immediately
         session.setAttribute("fullName", fullName.trim());
 
-        // Forward to profile page with success message
-        req.setAttribute("successMsg", "Profile updated successfully!");
-        // Re-load fresh data for profile.jsp
-        UsersModel updated = db.getUserById(userId);
-        if (updated != null) {
-            req.setAttribute("fullName", updated.getFullName());
-            req.setAttribute("email",    updated.getEmail());
-            req.setAttribute("phone",    updated.getPhoneNumber());
-            req.setAttribute("address",  updated.getAddress());
+        // Reload fresh data and forward to profile page
+        UsersModel updated2 = userDAO.getUserById(userId);
+        if (updated2 != null) {
+            request.setAttribute("fullName", updated2.getFullName());
+            request.setAttribute("email",    updated2.getEmail());
+            request.setAttribute("phone",    updated2.getPhoneNumber());
+            request.setAttribute("address",  updated2.getAddress());
         }
-        req.getRequestDispatcher("/pages/profile.jsp").forward(req, resp);
+        request.setAttribute("successMsg", "Profile updated successfully!");
+        request.getRequestDispatcher("/pages/profile.jsp").forward(request, response);
     }
 }
