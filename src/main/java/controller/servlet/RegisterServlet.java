@@ -33,8 +33,8 @@ public class RegisterServlet extends HttpServlet {
         String phoneNumber = request.getParameter("phoneNumber");
         String password    = request.getParameter("password");
         String confirmPass = request.getParameter("confirmPassword");
-        String role        = request.getParameter("role");
         String address     = request.getParameter("address");
+        // NOTE: role is NOT read from form — always set to "user" in UserDAO.insertUser()
 
         // ── 2. Null safety ─────────────────────────────────────────
         userId      = (userId      != null) ? userId.trim()      : "";
@@ -43,7 +43,6 @@ public class RegisterServlet extends HttpServlet {
         phoneNumber = (phoneNumber != null) ? phoneNumber.trim() : "";
         password    = (password    != null) ? password           : "";
         confirmPass = (confirmPass != null) ? confirmPass        : "";
-        role        = (role        != null) ? role.trim()        : "user";
 
         // ── 3. Empty field check ───────────────────────────────────
         if (ValidationUtil.isNullOrEmpty(userId)   || ValidationUtil.isNullOrEmpty(fullName) ||
@@ -110,9 +109,14 @@ public class RegisterServlet extends HttpServlet {
         String hashedPassword = PasswordUtil.getHashPassword(password);
 
         // ── 12. Build model and save via DAO ───────────────────────
-        UsersModel newUser = new UsersModel(
-            userId, fullName, email, hashedPassword, phoneNumber, role, address
-        );
+        // Role is NOT passed — UserDAO.insertUser() hardcodes 'user' in SQL
+        UsersModel newUser = new UsersModel();
+        newUser.setUserId(userId);
+        newUser.setFullName(fullName);
+        newUser.setEmail(email);
+        newUser.setPhoneNumber(phoneNumber);
+        newUser.setPassword(hashedPassword);
+        newUser.setAddress(address != null ? address.trim() : "");
 
         int result = userDAO.insertUser(newUser);
 

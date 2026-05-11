@@ -99,4 +99,12 @@
 <servlet-name>ChangePasswordServlet</servlet-name>
 <url-pattern>/ChangePasswordServlet</url-pattern>
 </servlet-mapping>
+<servlet>
+<servlet-name>MyOrderServlet</servlet-name>
+<servlet-class>controller.servlet.MyOrderServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>MyOrderServlet</servlet-name>
+<url-pattern>/MyOrdersServlet</url-pattern>
+</servlet-mapping>
 </web-app>

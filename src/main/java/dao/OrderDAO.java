@@ -1,6 +1,7 @@
 package dao;
 
 import model.OrdersModel;
+import model.OrderProductsModel;
 import util.DBConfig;
 
 import java.sql.Connection;
@@ -45,7 +46,7 @@ public class OrderDAO {
             "INSERT INTO order_products (order_id, product_id, quantity) VALUES (?, ?, ?)";
 
         try {
-            conn.setAutoCommit(false); // begin transaction
+            conn.setAutoCommit(false);
 
             try (PreparedStatement psOrder = conn.prepareStatement(INSERT_ORDER)) {
                 psOrder.setString(1, order.getOrderId());
@@ -60,8 +61,8 @@ public class OrderDAO {
             try (PreparedStatement psItem = conn.prepareStatement(INSERT_ORDER_PRODUCT)) {
                 for (String[] item : cartItems) {
                     psItem.setString(1, order.getOrderId());
-                    psItem.setString(2, item[0]); // productId
-                    psItem.setInt(3, Integer.parseInt(item[1])); // quantity
+                    psItem.setString(2, item[0]);
+                    psItem.setInt(3, Integer.parseInt(item[1]));
                     psItem.addBatch();
                 }
                 psItem.executeBatch();
@@ -81,6 +82,82 @@ public class OrderDAO {
     }
 
     // ──────────────────────────────────────────────────────────────
+    //  GET ORDERS BY USER (for My Orders page)
+    // ──────────────────────────────────────────────────────────────
+
+    /**
+     * Fetches all orders placed by a specific user, newest first.
+     */
+    public ArrayList<OrdersModel> getOrdersByUser(String userId) {
+        final String GET_ORDERS_BY_USER =
+            "SELECT order_id, total_amount, status, city, address, payment, created_at " +
+            "FROM orders WHERE user_id = ? ORDER BY created_at DESC";
+
+        ArrayList<OrdersModel> orders = new ArrayList<>();
+
+        try (PreparedStatement ps = conn.prepareStatement(GET_ORDERS_BY_USER)) {
+            ps.setString(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    OrdersModel order = new OrdersModel();
+                    order.setOrderId(rs.getString("order_id"));
+                    order.setUserId(userId);
+                    order.setTotalAmount(rs.getDouble("total_amount"));
+                    order.setStatus(rs.getString("status"));
+                    order.setCity(rs.getString("city"));
+                    order.setDeliveryAddress(rs.getString("address"));
+                    order.setPaymentMethod(rs.getString("payment"));
+                    order.setCreatedAt(rs.getString("created_at"));
+                    orders.add(order);
+                }
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getLocalizedMessage());
+        }
+        return orders;
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  GET ORDER ITEMS BY ORDER ID (products inside one order)
+    // ──────────────────────────────────────────────────────────────
+
+    /**
+     * Fetches all items for a specific order, joined with product name and price.
+     */
+    public ArrayList<OrderProductsModel> getOrderItems(String orderId) {
+        final String GET_ORDER_ITEMS =
+            "SELECT op.product_id, p.product_name, op.quantity, p.price, p.image " +
+            "FROM order_products op " +
+            "JOIN products p ON op.product_id = p.product_id " +
+            "WHERE op.order_id = ?";
+
+        ArrayList<OrderProductsModel> items = new ArrayList<>();
+
+        try (PreparedStatement ps = conn.prepareStatement(GET_ORDER_ITEMS)) {
+            ps.setString(1, orderId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    OrderProductsModel item = new OrderProductsModel();
+                    item.setOrderId(orderId);
+                    item.setProductId(rs.getString("product_id"));
+                    item.setProductName(rs.getString("product_name"));
+                    item.setQuantity(rs.getInt("quantity"));
+                    item.setUnitPrice(rs.getDouble("price"));
+                    item.setImage(rs.getString("image"));
+                    items.add(item);
+                }
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getLocalizedMessage());
+        }
+        return items;
+    }
+
+    // ──────────────────────────────────────────────────────────────
     //  GET ALL ORDERS (for admin order list)
     // ──────────────────────────────────────────────────────────────
 
@@ -88,7 +165,8 @@ public class OrderDAO {
         final String GET_ALL_ORDERS =
             "SELECT o.order_id, o.user_id, u.full_name, o.total_amount, " +
             "o.status, o.payment, o.created_at " +
-            "FROM orders o JOIN users u ON o.user_id = u.user_id";
+            "FROM orders o JOIN users u ON o.user_id = u.user_id " +
+            "ORDER BY o.created_at DESC";
 
         ArrayList<OrdersModel> orders = new ArrayList<>();
 

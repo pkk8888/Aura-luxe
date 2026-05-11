@@ -28,23 +28,23 @@ public class Userdao {
     }
 
     // ──────────────────────────────────────────────────────────────
-    //  LOGIN
+    //  LOGIN (by email + password)
     // ──────────────────────────────────────────────────────────────
 
     /**
-     * Validates login credentials.
-     * Returns: 1=admin, 2=user, 0=user not found, 3=wrong password, -1=DB error
+     * Validates login using email and password.
+     * Returns: 1=admin, 2=user, 0=email not found, 3=wrong password, -1=DB error
      */
-    public int validateLogin(String userId, String enteredPassword) {
+    public int validateLogin(String email, String enteredPassword) {
         final String SELECT_USER_LOGIN =
-            "SELECT user_id, password, role FROM users WHERE user_id = ?";
+            "SELECT user_id, password, role FROM users WHERE email = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(SELECT_USER_LOGIN)) {
-            ps.setString(1, userId);
+            ps.setString(1, email);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) {
-                    return 0; // user not found
+                    return 0; // email not found
                 }
 
                 String hashedPassword = rs.getString("password");
@@ -64,17 +64,45 @@ public class Userdao {
     }
 
     // ──────────────────────────────────────────────────────────────
+    //  GET USER ID BY EMAIL (needed to set session after login)
+    // ──────────────────────────────────────────────────────────────
+
+    /**
+     * Fetches the userId for a given email.
+     * Returns null if not found.
+     */
+    public String getUserIdByEmail(String email) {
+        final String SELECT_USERID_BY_EMAIL =
+            "SELECT user_id FROM users WHERE email = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(SELECT_USERID_BY_EMAIL)) {
+            ps.setString(1, email);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("user_id");
+                }
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getLocalizedMessage());
+        }
+        return null;
+    }
+
+    // ──────────────────────────────────────────────────────────────
     //  REGISTER
     // ──────────────────────────────────────────────────────────────
 
     /**
-     * Inserts a new user. Password inside UsersModel must already be hashed.
+     * Inserts a new user. Password must already be hashed.
+     * Role is always forced to "user" — admin can only be set via DB.
      * Returns: 1=success, 0=insert failed, -1=DB error
      */
     public int insertUser(UsersModel user) {
         final String INSERT_USER =
             "INSERT INTO users (user_id, full_name, email, phone_number, password, role) " +
-            "VALUES (?, ?, ?, ?, ?, ?)";
+            "VALUES (?, ?, ?, ?, ?, 'user')";
 
         try (PreparedStatement ps = conn.prepareStatement(INSERT_USER)) {
             ps.setString(1, user.getUserId());
@@ -82,7 +110,6 @@ public class Userdao {
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPhoneNumber());
             ps.setString(5, user.getPassword()); // already hashed
-            ps.setString(6, user.getRole());
 
             int rows = ps.executeUpdate();
             return rows > 0 ? 1 : 0;
@@ -94,7 +121,7 @@ public class Userdao {
     }
 
     // ──────────────────────────────────────────────────────────────
-    //  FETCH USER
+    //  FETCH USER BY ID
     // ──────────────────────────────────────────────────────────────
 
     /**
@@ -152,10 +179,6 @@ public class Userdao {
     //  UPDATE PROFILE
     // ──────────────────────────────────────────────────────────────
 
-    /**
-     * Updates a user's full name and address.
-     * Returns true on success.
-     */
     public boolean updateProfile(String userId, String fullName, String address) {
         final String UPDATE_USER_PROFILE =
             "UPDATE users SET full_name = ?, address = ? WHERE user_id = ?";
@@ -176,10 +199,6 @@ public class Userdao {
     //  UPDATE PASSWORD
     // ──────────────────────────────────────────────────────────────
 
-    /**
-     * Updates a user's password (must already be hashed before calling).
-     * Returns true on success.
-     */
     public boolean updatePassword(String userId, String hashedPassword) {
         final String UPDATE_USER_PASSWORD =
             "UPDATE users SET password = ? WHERE user_id = ?";

@@ -22,52 +22,55 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1. Read form fields
-        String userId   = request.getParameter("userID");
+        // 1. Read form fields — email now instead of userID
+        String email    = request.getParameter("email");
         String password = request.getParameter("password");
 
         // 2. Null safety
-        userId   = (userId   != null) ? userId.trim() : "";
-        password = (password != null) ? password      : "";
+        email    = (email    != null) ? email.trim() : "";
+        password = (password != null) ? password     : "";
 
         // 3. Empty field check
-        if (ValidationUtil.isNullOrEmpty(userId) || ValidationUtil.isNullOrEmpty(password)) {
-            request.setAttribute("errorMessage", "Please fill in both User ID and Password.");
+        if (ValidationUtil.isNullOrEmpty(email) || ValidationUtil.isNullOrEmpty(password)) {
+            request.setAttribute("errorMessage", "Please fill in both Email and Password.");
             request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
             return;
         }
 
-        // 4. Validate credentials via DAO
-        int result = userDAO.validateLogin(userId, password);
+        // 4. Email format check
+        if (!ValidationUtil.isValidEmail(email)) {
+            request.setAttribute("errorMessage", "Please enter a valid email address.");
+            request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
+            return;
+        }
 
-        if (result == 1) {
-            // Admin login
-            HttpSession session = request.getSession();
-            session.setAttribute("userID",  userId);
-            session.setAttribute("isAdmin", true);
+        // 5. Validate credentials via DAO (login by email)
+        int result = userDAO.validateLogin(email, password);
 
-            UsersModel admin = userDAO.getUserById(userId);
-            if (admin != null) session.setAttribute("fullName", admin.getFullName());
-
-            response.sendRedirect(request.getContextPath() + "/pages/order_list.jsp");
-
-        } else if (result == 2) {
-            // Normal user login
-            HttpSession session = request.getSession();
-            session.setAttribute("userID",  userId);
-            session.setAttribute("isAdmin", false);
-
+        if (result == 1 || result == 2) {
+            // Get the userId from email to store in session
+            String userId = userDAO.getUserIdByEmail(email);
             UsersModel user = userDAO.getUserById(userId);
+
+            HttpSession session = request.getSession();
+            session.setAttribute("userID",   userId);
+            session.setAttribute("isAdmin",  result == 1);
             if (user != null) session.setAttribute("fullName", user.getFullName());
 
-            response.sendRedirect(request.getContextPath() + "/pages/home.jsp");
+            if (result == 1) {
+                // Admin
+                response.sendRedirect(request.getContextPath() + "/pages/order_list.jsp");
+            } else {
+                // Normal user
+                response.sendRedirect(request.getContextPath() + "/FetchProductsServlet");
+            }
 
         } else if (result == 0) {
-            request.setAttribute("errorMessage", "No account found with that User ID. Please register first.");
+            request.setAttribute("errorMessage", "No account found with that email. Please register first.");
             request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
 
         } else if (result == 3) {
-            request.setAttribute("errorMessage", "Incorrect User ID or Password. Please try again.");
+            request.setAttribute("errorMessage", "Incorrect email or password. Please try again.");
             request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
 
         } else {

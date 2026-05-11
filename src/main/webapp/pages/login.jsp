@@ -55,14 +55,14 @@
     <form action="<%= request.getContextPath() %>/LoginServlet" method="post">
 
         <div class="form-group">
-            <label for="userID">User ID</label>
+            <label for="email">Email Address</label>
             <input
-                type="text"
-                id="userID"
-                name="userID"
-                placeholder="Enter your User ID"
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
                 required
-                autocomplete="username"
+                autocomplete="email"
             />
         </div>
 

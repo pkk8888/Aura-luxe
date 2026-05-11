@@ -92,6 +92,9 @@
             <a href="${pageContext.request.contextPath}/pages/change-password.jsp" class="pf-nav__link">
                 <span class="pf-nav__icon">🔒</span> Change Password
             </a>
+            <a href="${pageContext.request.contextPath}/MyOrdersServlet" class="pf-nav__link">
+                <span class="pf-nav__icon">📦</span> My Orders
+            </a>
             <div class="pf-nav__divider"></div>
             <a href="${pageContext.request.contextPath}/FetchProductsServlet" class="pf-nav__link">
                 <span class="pf-nav__icon">🛍️</span> Shop

@@ -72,7 +72,6 @@
                     name="userID"
                     placeholder="Min. 6 characters"
                     required
-                    
                 />
             </div>
 
@@ -125,15 +124,7 @@
                 />
             </div>
 
-            <%-- Role --%>
-            <div class="form-group full-width">
-                <label for="role">Account Type</label>
-                <select id="role" name="role" required>
-                    <option value="" disabled selected>Select account type</option>
-                    <option value="user">Customer</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
+            <%-- Role is NOT shown — hardcoded to 'user' in the database --%>
 
         </div>
 

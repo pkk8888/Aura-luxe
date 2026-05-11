@@ -11,6 +11,9 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CheckoutServlet extends HttpServlet {
 
@@ -31,17 +34,41 @@ public class CheckoutServlet extends HttpServlet {
 
         String userId = (String) session.getAttribute("userID");
 
-        // 2. Fetch cart items via DAO (includes product name, price, image from JOIN)
-        ArrayList<CartsModel> cartItems = cartDAO.getCartItems(userId);
+        // 2. Fetch cart items via DAO
+        ArrayList<CartsModel> items = cartDAO.getCartItems(userId);
 
-        double grandTotal = 0;
-        for (CartsModel item : cartItems) {
-            grandTotal += item.getLineTotal();
+        if (items.isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/FetchProductsServlet");
+            return;
         }
 
-        // 3. Forward to checkout page
+        // 3. Convert to List<Map> so checkout.jsp works without any changes
+        List<Map<String, Object>> cartItems = new ArrayList<>();
+        double grandTotal = 0;
+
+        for (CartsModel item : items) {
+            double lineTotal = item.getLineTotal();
+            grandTotal += lineTotal;
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("productId",   item.getProductId());
+            map.put("productName", item.getProductName());
+            map.put("price",       item.getPrice());
+            map.put("image",       item.getImage());
+            map.put("quantity",    item.getQuantity());
+            map.put("lineTotal",   lineTotal);
+            cartItems.add(map);
+        }
+
+        // 4. Forward to checkout page
         request.setAttribute("cartItems",  cartItems);
         request.setAttribute("grandTotal", grandTotal);
         request.getRequestDispatcher("/pages/checkout.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
     }
 }
