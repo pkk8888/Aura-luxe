@@ -59,7 +59,7 @@ public class LoginServlet extends HttpServlet {
 
             if (result == 1) {
                 // Admin
-                response.sendRedirect(request.getContextPath() + "/pages/order_list.jsp");
+                response.sendRedirect(request.getContextPath() + "/AdminOrdersServlet");
             } else {
                 // Normal user
                 response.sendRedirect(request.getContextPath() + "/FetchProductsServlet");
