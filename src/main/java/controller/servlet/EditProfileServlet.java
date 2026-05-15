@@ -93,7 +93,7 @@ public class EditProfileServlet extends HttpServlet {
             return;
         }
 
-        // Update session so navbar shows new name immediately
+        
         session.setAttribute("fullName", fullName.trim());
 
         // Reload fresh data and forward to profile page

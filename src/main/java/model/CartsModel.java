@@ -38,7 +38,7 @@ public class CartsModel {
     public String getImage() { return image; }
     public void setImage(String image) { this.image = image; }
 
-    // Line total — use this in JSP instead of calculating manually
+   
     public double getLineTotal() {
         return price * quantity;
     }

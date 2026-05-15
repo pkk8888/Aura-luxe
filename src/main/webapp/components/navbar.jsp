@@ -36,6 +36,13 @@
                         <circle cx="12" cy="7" r="4"/>
                     </svg>
                 </a>
+                <a href="${pageContext.request.contextPath}/MyOrdersServlet" class="al-navbar__icon-btn" title="My Orders">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                        <rect x="9" y="3" width="6" height="4" rx="1"/>
+                        <path d="M9 12h6M9 16h4"/>
+                    </svg>
+                </a>
                 <a href="${pageContext.request.contextPath}/LogoutServlet" class="al-navbar__btn al-navbar__btn--outline">Sign Out</a>
             <% } else { %>
                 <a href="${pageContext.request.contextPath}/pages/login.jsp" class="al-navbar__btn al-navbar__btn--outline">Sign In</a>
@@ -57,6 +64,7 @@
         <a href="${pageContext.request.contextPath}/pages/contact-us.jsp" class="al-navbar__mobile-link">Contact</a>
         <% if (navUserId != null) { %>
             <a href="${pageContext.request.contextPath}/ProfileServlet" class="al-navbar__mobile-link">👤 My Profile</a>
+            <a href="${pageContext.request.contextPath}/MyOrdersServlet" class="al-navbar__mobile-link">📦 My Orders</a>
             <a href="${pageContext.request.contextPath}/EditProfileServlet" class="al-navbar__mobile-link">✏️ Edit Profile</a>
             <a href="${pageContext.request.contextPath}/pages/change-password.jsp" class="al-navbar__mobile-link">🔒 Change Password</a>
             <a href="${pageContext.request.contextPath}/CartServlet" class="al-navbar__mobile-link">🛍️ My Cart</a>
