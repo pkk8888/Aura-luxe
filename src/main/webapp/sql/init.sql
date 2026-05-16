@@ -74,12 +74,3 @@ CREATE TABLE IF NOT EXISTS order_products (
         REFERENCES products (product_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ── Table: inquiry ─────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS inquiry (
-    inquiry_id VARCHAR(50)  NOT NULL,
-    user_id    VARCHAR(50)           DEFAULT NULL,
-    subject    VARCHAR(255) NOT NULL,
-    message    TEXT         NOT NULL,
-    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (inquiry_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
