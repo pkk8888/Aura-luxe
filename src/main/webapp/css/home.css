@@ -7,7 +7,7 @@ body {
     overflow-x: hidden;
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 /* ====== SHARED UTILITIES ====== */
 
@@ -96,7 +96,7 @@ html { scroll-behavior: smooth; }
     background-image: linear-gradient(160deg, #1a0a0f 0%, #4a1020 50%, #8b2442 100%);
     display: flex;
     align-items: center;
-    padding-top: 65px;
+    padding-top: 70px;
     position: relative;
     overflow: hidden;
 }
@@ -279,9 +279,6 @@ html { scroll-behavior: smooth; }
 .al-marquee-sep {
     color: #e8a0b0 !important;
 }
-
-
-
 
 /* ====== CATEGORIES ====== */
 
@@ -609,4 +606,51 @@ html { scroll-behavior: smooth; }
     font-size: 12px;
     color: #906070;
     margin-top: 2px;
+}
+
+
+@media (max-width: 1024px) {
+    .al-products__grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 900px) {
+    .al-hero {
+        min-height: auto;
+        overflow: hidden;
+    }
+    .al-hero__inner {
+        flex-direction: column;
+        gap: 0;
+        padding: 40px 20px 50px;
+        text-align: center;
+    }
+    .al-hero__visual { display: none !important; }
+    .al-hero__title  { font-size: 38px; }
+    .al-hero__desc   { font-size: 15px; max-width: 100%; }
+    .al-hero__actions { justify-content: center; }
+    .al-hero__badge  { margin: 0 auto 20px; }
+    .al-categories__grid { grid-template-columns: repeat(2, 1fr); }
+    .al-testimonials__grid { grid-template-columns: 1fr; gap: 16px; }
+    .al-testimonials { padding: 48px 0; }
+}
+
+@media (max-width: 768px) {
+    .al-products__grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .al-products__head { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .al-products { padding: 48px 0; }
+    .al-about__inner { grid-template-columns: 1fr; gap: 36px; }
+    .al-about { padding: 48px 0; }
+    .al-about__stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+    .al-hero__title  { font-size: 28px; }
+    .al-hero__desc   { font-size: 14px; }
+    .al-hero__actions { flex-direction: column; align-items: stretch; gap: 10px; }
+    .al-btn { text-align: center; display: block; }
+    .al-categories__grid { grid-template-columns: 1fr; }
+    .al-categories { padding: 40px 0; }
+    .al-section-title { font-size: 26px; }
+    .al-products__grid { grid-template-columns: 1fr; }
+    .al-testimonials__grid { max-width: 100%; }
 }

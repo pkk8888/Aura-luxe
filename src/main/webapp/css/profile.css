@@ -223,3 +223,9 @@ body {
 }
 .pf-alert--success { background: #f0faf4; border: 1px solid #b7e4c7; color: #1a6b3a; }
 .pf-alert--error   { background: #fff0f3; border: 1px solid #f5c6d0; color: #8b2442; }
+
+@media (max-width: 480px) {
+    .pf-page { padding: 86px 14px 40px; }
+    .pf-card { padding: 20px 16px; border-radius: 14px; }
+    .pf-sidebar { padding: 20px 16px; border-radius: 14px; }
+}
